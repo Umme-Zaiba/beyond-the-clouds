@@ -1,5 +1,6 @@
 import { useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router-dom';
+import { sfx } from '../../lib/audio';
 
 type Variant = 'primary' | 'ghost';
 
@@ -23,6 +24,7 @@ function useCrack(): [boolean, () => void] {
   return [
     on,
     () => {
+      sfx.seal();
       setOn(false);
       requestAnimationFrame(() => setOn(true));
       window.setTimeout(() => setOn(false), 700);

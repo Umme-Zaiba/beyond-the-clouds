@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Bookmark, BookmarkCheck, Eye, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { WeaponArt } from '../../components/cards/WeaponArt';
+import { ArtifactStage } from '../../components/cards/ArtifactStage';
 import { Landscape } from '../../components/motion/Landscape';
 import { SealButton } from '../../components/motion/JadeSeal';
 import { ARCHIVE_BY_ID } from '../../data/archive';
@@ -37,7 +37,7 @@ export function EntryPage() {
   return (
     <article className="entry" data-mood={realm.mood}>
       <div className="entry__banner">
-        <Landscape palette={realm.palette} seed={realm.seed} />
+        <Landscape palette={realm.palette} seed={realm.seed} features={{ stars: realm.features.stars }} />
         <Link to={`/realms/${realm.id}`} className="entry__realm">
           {realm.native} · {realm.name}
         </Link>
@@ -46,7 +46,7 @@ export function EntryPage() {
       <div className="entry__wrap">
         <aside className="entry__side">
           {entry.kind === 'artifact' ? (
-            <WeaponArt shape={entry.shape} affinity={entry.affinity} title={entry.name} className="entry__art" />
+            <ArtifactStage shape={entry.shape} affinity={entry.affinity} title={entry.name} className="entry__art" />
           ) : (
             <div className="entry__sigil" style={{ background: `linear-gradient(160deg, ${realm.palette.mid}, ${realm.palette.near})` }} aria-hidden="true">
               {entry.name.split(' ').slice(-1)[0].charAt(0)}

@@ -1,52 +1,37 @@
-/* ───────────── Tokens ───────────── */
+/* ───────────── Tokens: celestial night ───────────── */
 :root {
   --ivory: #f2eee5;
-  --jade: #91b8ac;
-  --mist: #d6e0de;
-  --gold: #b69a61;
-  --ink: #222b2b;
+  --ink: #070a1c;
+  --jade: #7fe0c8;
+  --cyan: #8ee9ff;
+  --violet: #a58bff;
+  --rose: #ffa9cb;
+  --gold: #e7c47a;
 
-  --bg: var(--ivory);
-  --fg: var(--ink);
-  --muted: #566362;
-  --gold-text: #7d6630;
-  --card: rgba(255, 255, 255, 0.55);
-  --card-solid: #fbf9f4;
-  --line: rgba(34, 43, 43, 0.14);
-  --line-strong: rgba(34, 43, 43, 0.32);
-  --focus: #2f7c6d;
-  --trail-a: #b69a61;
-  --trail-b: #91b8ac;
-  --seal-bg: linear-gradient(135deg, #34423f, #222b2b);
-  --seal-fg: #f2eee5;
-  --seal-glyph-bg: #91b8ac;
-  --seal-glyph-fg: #222b2b;
-  --shadow: 0 18px 40px -22px rgba(34, 43, 43, 0.45);
+  --bg: #070a1c;
+  --bg-2: #0d1230;
+  --fg: #eef0ff;
+  --muted: #aab2d6;
+  --gold-text: #f0cf8c;
+  --card: rgba(160, 175, 255, 0.07);
+  --card-solid: rgba(16, 22, 58, 0.92);
+  --line: rgba(160, 185, 255, 0.18);
+  --line-strong: rgba(160, 200, 255, 0.38);
+  --focus: #8ee9ff;
+  --trail-a: #ffe3a3;
+  --trail-b: #8ee9ff;
+  --aff: #8ee9ff;
+  --seal-bg: linear-gradient(135deg, #82e6ff, #8f88ff 60%, #c58bff);
+  --seal-fg: #071022;
+  --seal-glyph-bg: #071022;
+  --seal-glyph-fg: #9fe9ff;
+  --shadow: 0 18px 44px -20px rgba(0, 0, 0, 0.85);
+  --glow: 0 0 34px rgba(142, 233, 255, 0.35);
 
   --display: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
   --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --han: 'Noto Serif SC', 'Songti SC', serif;
   --radius: 16px;
-  color-scheme: light;
-}
-
-[data-theme='dark'] {
-  --bg: #121819;
-  --fg: #f2eee5;
-  --muted: #a8b5b2;
-  --gold-text: #e0c88c;
-  --card: rgba(242, 238, 229, 0.06);
-  --card-solid: #1b2425;
-  --line: rgba(242, 238, 229, 0.16);
-  --line-strong: rgba(242, 238, 229, 0.4);
-  --focus: #9fe0cc;
-  --trail-a: #f0cf8c;
-  --trail-b: #86d9c4;
-  --seal-bg: linear-gradient(135deg, #a7cdc1, #7fb3a4);
-  --seal-fg: #121819;
-  --seal-glyph-bg: #121819;
-  --seal-glyph-fg: #f0cf8c;
-  --shadow: 0 18px 44px -22px rgba(0, 0, 0, 0.8);
   color-scheme: dark;
 }
 

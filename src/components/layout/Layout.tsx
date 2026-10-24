@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { Menu, Sparkles, X } from 'lucide-react';
+import { Menu, Sparkles, Volume2, VolumeX, X } from 'lucide-react';
+import { setSoundEnabled } from '../../lib/audio';
 import { useState } from 'react';
 import { QiCursor } from '../motion/QiCursor';
 import { useProgress } from '../../state/ProgressContext';
@@ -16,17 +17,15 @@ const NAV = [
   { to: '/collection', label: 'Collection', glyph: '云' },
 ];
 
-/** The routes whose scenes are dark. The theme drives palette, cursor colour and canvas tint. */
-function themeFor(pathname: string): 'light' | 'dark' {
-  if (pathname.startsWith('/forge')) return 'dark';
+/** Every scene is a night scene now; `data-theme` stays on <html> so a realm can still tint its page. */
+function themeFor(pathname: string): string {
   const m = pathname.match(/^\/realms\/(\w+)/);
-  if (m && m[1] in REALMS) return REALMS[m[1] as keyof typeof REALMS].mood;
-  return 'light';
+  return m && m[1] in REALMS ? m[1] : 'night';
 }
 
 export function Layout() {
   const { pathname } = useLocation();
-  const { progress, setTrail } = useProgress();
+  const { progress, setTrail, setSound } = useProgress();
   const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
 
@@ -36,7 +35,8 @@ export function Layout() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const ink = themeFor(pathname) === 'dark';
+  useEffect(() => setSoundEnabled(progress.sound), [progress.sound]);
+
   const forged = progress.forged.length;
 
   return (
@@ -64,9 +64,20 @@ export function Layout() {
           ))}
         </nav>
 
-        <button className="nav__toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="nav__tools">
+          <button
+            className="nav__sound"
+            aria-pressed={progress.sound}
+            aria-label={progress.sound ? 'Turn sound off' : 'Turn sound on'}
+            title={progress.sound ? 'Sound on' : 'Sound off'}
+            onClick={() => setSound(!progress.sound)}
+          >
+            {progress.sound ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          </button>
+          <button className="nav__toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </header>
 
       <AnimatePresence mode="wait" initial={false}>
@@ -83,7 +94,7 @@ export function Layout() {
         </motion.main>
       </AnimatePresence>
 
-      {!reduced && <TalismanVeil routeKey={pathname} dark={ink} />}
+      {!reduced && <TalismanVeil routeKey={pathname} />}
 
       <footer className="footer">
         <div className="footer__inner">
@@ -95,9 +106,14 @@ export function Layout() {
             </p>
           </div>
           <div className="footer__tools">
-            <button className="chip" onClick={() => setTrail(!progress.trail)} aria-pressed={progress.trail}>
-              <Sparkles size={14} /> Qi trail {progress.trail ? 'on' : 'off'}
-            </button>
+            <div className="footer__chips">
+              <button className="chip" onClick={() => setTrail(!progress.trail)} aria-pressed={progress.trail}>
+                <Sparkles size={14} /> Qi trail {progress.trail ? 'on' : 'off'}
+              </button>
+              <button className="chip" onClick={() => setSound(!progress.sound)} aria-pressed={progress.sound}>
+                {progress.sound ? <Volume2 size={14} /> : <VolumeX size={14} />} Sound {progress.sound ? 'on' : 'off'}
+              </button>
+            </div>
             <p className="footer__stat">
               {forged} of {TOTAL_WEAPONS} weapons forged
             </p>
@@ -111,11 +127,11 @@ export function Layout() {
 }
 
 /** A talisman paper that burns across the screen between pages. */
-function TalismanVeil({ routeKey, dark }: { routeKey: string; dark: boolean }) {
+function TalismanVeil({ routeKey }: { routeKey: string }) {
   return (
     <motion.div
       key={routeKey}
-      className={`veil${dark ? ' veil--dark' : ''}`}
+      className="veil"
       aria-hidden="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: [0, 1, 1, 0] }}

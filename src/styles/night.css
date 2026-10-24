@@ -1,0 +1,585 @@
+/* Celestial night: loaded after global.css, so it wins ties. Glass surfaces, luminous accents,
+   deep indigo skies, and light that comes from the artifacts themselves. */
+
+body {
+  background:
+    radial-gradient(1100px 620px at 85% -8%, rgba(130, 105, 255, 0.22), transparent 70%),
+    radial-gradient(900px 520px at -5% 28%, rgba(70, 215, 255, 0.12), transparent 70%),
+    radial-gradient(900px 600px at 50% 120%, rgba(255, 150, 200, 0.09), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+::selection {
+  background: rgba(142, 233, 255, 0.35);
+}
+
+/* ── shared glass + glow ── */
+.eyebrow {
+  color: #bfe9ff;
+  text-shadow: 0 0 18px rgba(142, 233, 255, 0.45);
+}
+.skip-link {
+  background: #8ee9ff;
+  color: #071022;
+}
+.tag {
+  background: rgba(160, 190, 255, 0.07);
+  border-color: rgba(160, 200, 255, 0.3);
+  color: #cdd6ff;
+}
+.tag--original {
+  border-color: rgba(240, 207, 140, 0.7);
+  color: #f0cf8c;
+}
+.chip {
+  background: rgba(160, 190, 255, 0.06);
+  backdrop-filter: blur(8px);
+}
+.chip:hover {
+  background: rgba(160, 190, 255, 0.14);
+}
+.chip[aria-pressed='true'] {
+  background: linear-gradient(135deg, #82e6ff, #8f88ff);
+  color: #071022;
+  border-color: transparent;
+  box-shadow: 0 0 22px rgba(130, 230, 255, 0.35);
+}
+h1,
+h2 {
+  text-shadow: 0 0 40px rgba(140, 160, 255, 0.25);
+}
+
+/* ── nav ── */
+.nav {
+  background: linear-gradient(to bottom, rgba(7, 10, 28, 0.82), rgba(7, 10, 28, 0));
+}
+.nav__mark {
+  background: linear-gradient(135deg, #82e6ff, #8f88ff);
+  color: #071022;
+  box-shadow: 0 0 22px rgba(130, 230, 255, 0.5);
+}
+.nav__link.is-active::after {
+  background: linear-gradient(90deg, #8ee9ff, #e7c47a);
+  box-shadow: 0 0 10px rgba(142, 233, 255, 0.8);
+}
+.nav__count {
+  background: #e7c47a;
+}
+.nav__tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav__sound {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: rgba(160, 190, 255, 0.07);
+  cursor: pointer;
+  transition: box-shadow 0.25s, background 0.25s;
+}
+.nav__sound[aria-pressed='true'] {
+  background: rgba(142, 233, 255, 0.18);
+  box-shadow: 0 0 18px rgba(142, 233, 255, 0.45);
+  color: #bff3ff;
+}
+.footer__chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── seals ── */
+.seal {
+  box-shadow: 0 0 30px rgba(130, 230, 255, 0.28), var(--shadow);
+}
+.seal:hover:not(:disabled) {
+  box-shadow: 0 0 0 4px rgba(142, 233, 255, 0.2), 0 0 44px rgba(142, 233, 255, 0.55), var(--shadow);
+}
+.seal--ghost {
+  background: rgba(160, 190, 255, 0.06);
+  backdrop-filter: blur(8px);
+  box-shadow: none;
+}
+.seal--ghost:hover:not(:disabled) {
+  background: rgba(160, 190, 255, 0.16);
+  box-shadow: 0 0 26px rgba(142, 233, 255, 0.25);
+}
+.seal--ghost .seal__glyph {
+  background: linear-gradient(135deg, #82e6ff, #8f88ff);
+  color: #071022;
+}
+.seal__crack path {
+  stroke: #fff;
+  filter: drop-shadow(0 0 4px #8ee9ff);
+}
+
+/* ── landscape extras ── */
+.ls-star {
+  animation: twinkle 4.5s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.ls-vine {
+  transform-origin: 50% 0;
+  transform-box: fill-box;
+  animation: sway 7s ease-in-out infinite alternate;
+}
+@keyframes sway {
+  from {
+    transform: rotate(-1.6deg);
+  }
+  to {
+    transform: rotate(1.6deg);
+  }
+}
+.petals {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── rune ring + artifact stage ── */
+.rune-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: var(--ring-opacity, 1);
+  overflow: visible;
+}
+.rune-ring__outer {
+  animation: spin 120s linear infinite;
+}
+.rune-ring__mid {
+  animation: spin 80s linear infinite reverse;
+}
+.rune-ring__inner {
+  animation: spin 50s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.artifact-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  width: 100%;
+}
+.artifact-stage .artifact-stage__weapon {
+  position: absolute;
+  inset: 0;
+  height: 88%;
+  width: auto;
+  max-height: none;
+  margin: auto;
+  transform: none;
+  animation: float 6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--aff) 55%, transparent));
+}
+@keyframes float {
+  from {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+  to {
+    transform: translateY(8px) rotate(1deg);
+  }
+}
+
+/* ── hero ── */
+.hero {
+  background: #070a28;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  place-items: unset;
+}
+.hero__scene,
+.hero__mist,
+.hero__petals {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.hero__petals {
+  z-index: 2;
+}
+.hero__content {
+  grid-column: 1;
+  grid-row: 1;
+  text-align: left;
+  max-width: none;
+  padding: 130px clamp(20px, 6vw, 96px) 120px;
+  align-self: center;
+}
+.hero__artifact {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: 80px 4vw 40px 0;
+  transform: translate(calc(var(--px, 0) * 16px), calc(var(--py, 0) * 12px)) rotate(calc(var(--px, 0) * 4deg));
+  transition: transform 0.15s linear;
+  pointer-events: none;
+}
+.hero__stage {
+  width: min(38vw, 500px);
+  --aff: #9fe6ff;
+}
+.hero__title {
+  justify-content: flex-start;
+  color: #fff;
+  text-shadow: none;
+  font-size: clamp(3.4rem, 8.2vw, 8rem);
+  line-height: 0.94;
+  margin-bottom: 34px;
+}
+.hero__word {
+  background: linear-gradient(180deg, #ffffff 18%, #d3ecff 55%, #f1c9ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 34px rgba(140, 170, 255, 0.5));
+  padding-bottom: 0.08em;
+}
+.hero .eyebrow {
+  color: #c4ecff;
+  max-width: 34ch;
+  line-height: 1.7;
+}
+.hero__actions {
+  align-items: flex-start;
+}
+.hero__hint {
+  color: #bcc8f5;
+}
+.hero__scroll {
+  border-color: rgba(190, 220, 255, 0.5);
+  color: #dff3ff;
+  background: rgba(10, 14, 40, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+/* ── sections ── */
+.section--forge {
+  background: linear-gradient(180deg, transparent, rgba(110, 100, 255, 0.1) 25%, rgba(70, 200, 255, 0.07) 75%, transparent);
+}
+.forge-teaser__art {
+  align-items: center;
+  gap: 0;
+}
+.forge-teaser__art .artifact-stage {
+  width: 34%;
+}
+.step,
+.progress__cell,
+.mat-row li,
+.related a,
+.gather,
+.filters .search {
+  background: rgba(18, 26, 70, 0.45);
+  backdrop-filter: blur(10px);
+  border-color: var(--line);
+}
+.step__glyph,
+.nav__glyph {
+  color: #f0cf8c;
+  text-shadow: 0 0 16px rgba(240, 207, 140, 0.55);
+}
+
+/* ── cards ── */
+.realm-card {
+  color: #fff;
+  border-color: rgba(160, 200, 255, 0.25);
+}
+.realm-card:hover {
+  border-color: rgba(142, 233, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(142, 233, 255, 0.35), 0 34px 70px -22px rgba(120, 100, 255, 0.6);
+}
+.realm-card__body,
+.realm-card[data-mood='dark'] .realm-card__body {
+  background: linear-gradient(to top, rgba(6, 9, 30, 0.94) 22%, rgba(6, 9, 30, 0));
+}
+.entry-card {
+  background: rgba(18, 26, 70, 0.5);
+  backdrop-filter: blur(10px);
+  border-color: var(--line);
+}
+.entry-card:hover {
+  background: rgba(26, 36, 92, 0.7);
+  border-color: rgba(142, 233, 255, 0.6);
+  box-shadow: 0 0 40px -10px rgba(142, 233, 255, 0.45);
+}
+.entry-card__art {
+  height: 190px;
+}
+.entry-card__sigil,
+.entry__sigil {
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.22), 0 0 34px rgba(140, 170, 255, 0.45);
+}
+.entry-card__title,
+.entry__title {
+  color: #f0cf8c;
+}
+
+/* ── map: a night star chart ── */
+.map {
+  background:
+    radial-gradient(circle at 18% 28%, rgba(140, 110, 255, 0.4), transparent 42%),
+    radial-gradient(circle at 82% 72%, rgba(80, 220, 255, 0.24), transparent 46%),
+    radial-gradient(circle at 60% 20%, rgba(255, 160, 200, 0.14), transparent 40%),
+    linear-gradient(160deg, #0b1130, #151b52);
+  border-color: rgba(160, 200, 255, 0.35);
+  box-shadow: 0 0 60px -20px rgba(120, 110, 255, 0.55), var(--shadow);
+}
+.map::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 33% 72%, #cfe8ff, transparent),
+    radial-gradient(1.4px 1.4px at 58% 40%, #fff, transparent),
+    radial-gradient(1px 1px at 74% 14%, #ffe9c8, transparent),
+    radial-gradient(1.2px 1.2px at 90% 56%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 90%, #cfe8ff, transparent),
+    radial-gradient(1px 1px at 46% 8%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 66% 86%, #ffd9ec, transparent);
+  opacity: 0.8;
+}
+.map__paths path {
+  stroke: #8ee9ff;
+  filter: drop-shadow(0 0 4px #8ee9ff);
+}
+.map__pin {
+  color: #fff;
+}
+.map__peak {
+  filter: drop-shadow(0 0 14px rgba(142, 233, 255, 0.55));
+}
+.map__cloud {
+  background: rgba(190, 200, 255, 0.85);
+}
+.map__label {
+  background: rgba(8, 12, 40, 0.72);
+  border-color: rgba(160, 200, 255, 0.35);
+  box-shadow: 0 0 24px -8px rgba(142, 233, 255, 0.5);
+}
+.map__label small {
+  color: #aeb8e6;
+}
+
+/* ── realm + entry pages ── */
+.realm__title,
+.realm[data-mood='dark'] .realm__title {
+  color: #fff;
+  text-shadow: 0 2px 40px rgba(20, 20, 80, 0.7), 0 0 60px rgba(160, 190, 255, 0.35);
+}
+.realm__scene::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 160px;
+  background: linear-gradient(to top, var(--bg), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+.realm__petals,
+.realm__mist {
+  z-index: 1;
+}
+.entry__realm,
+.entry[data-mood='dark'] .entry__realm {
+  background: rgba(8, 12, 40, 0.7);
+  color: #e6f3ff;
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(8px);
+}
+.entry__banner::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 120px;
+  background: linear-gradient(to top, var(--bg), transparent);
+}
+.entry .entry__art {
+  width: min(100%, 320px);
+  height: auto;
+  margin-top: -100px;
+  filter: none;
+  --aff: #8ee9ff;
+}
+.entry__sigil {
+  border-color: var(--bg);
+}
+.secret {
+  border-color: rgba(240, 207, 140, 0.55);
+  background: rgba(240, 207, 140, 0.06);
+}
+
+/* ── trial ── */
+.trial {
+  background: rgba(10, 16, 52, 0.5);
+}
+.trial__arc {
+  stroke: #8ee9ff;
+  filter: drop-shadow(0 0 8px #8ee9ff);
+}
+.trial__spark {
+  fill: #ffe3a3;
+  filter: drop-shadow(0 0 10px #ffd27a);
+}
+.trial__center {
+  fill: #f0cf8c;
+}
+
+/* ── forge ── */
+.forge__stage[data-affinity='wind'] {
+  --aff: #7fe8c8;
+}
+.forge__stage[data-affinity='ice'] {
+  --aff: #8fb8ff;
+}
+.forge__stage[data-affinity='flame'] {
+  --aff: #ff9a5a;
+}
+.anvil {
+  background:
+    radial-gradient(ellipse at 50% 92%, color-mix(in srgb, var(--aff) 32%, transparent), transparent 62%),
+    linear-gradient(180deg, #0d1336, #070a1c);
+  border-color: rgba(160, 200, 255, 0.35);
+  box-shadow: 0 0 60px -22px var(--aff), var(--shadow);
+}
+.anvil__glow {
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--aff) 70%, transparent), transparent 65%);
+}
+.stage-art .stage-art__weapon {
+  width: min(100%, 420px);
+  height: auto;
+  aspect-ratio: 1;
+}
+[data-phase='forging'] .stage-art__weapon {
+  animation: shake 0.28s linear 9;
+  filter: drop-shadow(0 0 30px var(--aff));
+}
+.sparks i {
+  background: #fff;
+  box-shadow: 0 0 10px var(--aff), 0 0 4px #fff;
+}
+.choice {
+  background: rgba(18, 26, 70, 0.45);
+  backdrop-filter: blur(8px);
+}
+.choice.is-on {
+  border-color: #8ee9ff;
+  background: rgba(30, 44, 110, 0.65);
+  box-shadow: 0 0 0 3px rgba(142, 233, 255, 0.22), 0 0 34px -4px rgba(142, 233, 255, 0.6);
+}
+.field__count {
+  color: #f0cf8c;
+}
+.weapon-card {
+  background: rgba(14, 20, 60, 0.7);
+  backdrop-filter: blur(10px);
+  border-color: rgba(160, 200, 255, 0.35);
+}
+.weapon-card[data-rarity='heaven'] {
+  box-shadow: 0 0 0 1px #f0cf8c, 0 0 50px -6px rgba(240, 207, 140, 0.8);
+}
+.weapon-card[data-rarity='earth'] {
+  box-shadow: 0 0 0 1px rgba(127, 224, 200, 0.7), 0 0 40px -10px rgba(127, 224, 200, 0.7);
+}
+.weapon-card__art .artifact-stage {
+  width: 100%;
+}
+.weapon-card__title {
+  color: #f0cf8c;
+}
+.reveal .weapon-card {
+  background: rgba(8, 12, 40, 0.55);
+}
+
+/* ── veil ── */
+.veil {
+  background: radial-gradient(circle at 50% 50%, rgba(30, 24, 90, 0.97), rgba(5, 7, 22, 0.99));
+}
+.veil__paper {
+  box-shadow: 0 0 80px rgba(255, 200, 120, 0.55), 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ── responsive for the new hero ── */
+@media (max-width: 920px) {
+  .hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-items: start;
+  }
+  .hero__scene,
+  .hero__mist,
+  .hero__petals {
+    grid-row: 1 / -1;
+  }
+  .hero__artifact {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 90px 0 0;
+  }
+  .hero__stage {
+    width: min(78vw, 380px);
+  }
+  .hero__content {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: center;
+    padding: 0 20px 120px;
+  }
+  .hero__title {
+    justify-content: center;
+    font-size: clamp(3rem, 14vw, 5.4rem);
+  }
+  .hero__actions {
+    align-items: center;
+  }
+  .hero .eyebrow {
+    margin-inline: auto;
+  }
+  .entry .entry__art {
+    margin-top: -80px;
+    width: min(70%, 280px);
+  }
+}
+@media (max-width: 760px) {
+  .nav__links {
+    background: rgba(10, 14, 44, 0.96);
+    backdrop-filter: blur(14px);
+  }
+  .forge-teaser__art .artifact-stage {
+    width: 40%;
+  }
+  .forge-teaser__art {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__artifact {
+    transform: none;
+  }
+}

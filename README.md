@@ -6,7 +6,7 @@ An interactive xianxia world: wander three original realms, pass spiritual trial
 
 > Make a visitor feel they have stepped into a xianxia world within five seconds, give them one ritual worth doing (forging a weapon), and hand them something worth sharing.
 
-- **First five seconds:** ink-wash landscape, drifting mist, and a cursor that is a sword leaving a qi trail.
+- **First five seconds:** a luminous night sky, floating lit palaces, falling petals, a rune-circle sword that tilts toward the cursor, and a cursor that is itself a sword leaving a qi trail.
 - **One ritual:** gather materials in the realms, then forge. The result is deterministic, so every one of the 135 weapons is plannable and collectable.
 - **One share artifact:** each forged weapon renders to a 1080x1350 share card (Web Share, or PNG download).
 
@@ -52,3 +52,8 @@ Archive entries carry a `provenance` field (`original` or `drama-canon`). Everyt
 ## Deploy
 
 `render.yaml` defines a static site (build `npm ci && npm run build`, publish `dist`, SPA rewrite to `index.html`).
+
+## Sound and share image
+
+- **Sound** is off by default (toggle in the nav and footer). It is synthesised with the Web Audio API, so there are no audio files: an ambient bed of drones and wind, a soft bell now and then, and chimes, forge strikes and a reveal arpeggio for interactions.
+- **OG image:** `npm run og` regenerates `public/og.png` from the same scene components the site uses, so the link preview always matches the hero.

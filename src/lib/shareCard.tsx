@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { WeaponArt } from '../components/cards/WeaponArt';
+import { RuneRing } from '../components/motion/RuneRing';
 import { STAT_LABELS } from '../data/forge';
 import { mulberry32 } from './landscape';
 import type { StatKey, WeaponResult } from '../types';
@@ -67,6 +68,13 @@ export async function renderShareCard(weapon: WeaponResult): Promise<Blob> {
   ctx.strokeRect(36, 36, W - 72, H - 72);
   ctx.strokeStyle = 'rgba(182,154,97,0.3)';
   ctx.strokeRect(52, 52, W - 104, H - 104);
+
+  const ring = await loadSvg(
+    renderToStaticMarkup(<RuneRing color={c2} accent={c1} />).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" '),
+  );
+  ctx.globalAlpha = 0.85;
+  ctx.drawImage(ring, W / 2 - 450, 540 - 450, 900, 900);
+  ctx.globalAlpha = 1;
 
   const art = await loadSvg(
     renderToStaticMarkup(

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { Check, Image as ImageIcon, Lock, RotateCcw } from 'lucide-react';
 import { WeaponArt } from '../../components/cards/WeaponArt';
+import { ArtifactStage } from '../../components/cards/ArtifactStage';
 import { Mist } from '../../components/motion/Mist';
 import { SealButton } from '../../components/motion/JadeSeal';
 import { WeaponCard } from './WeaponCard';
@@ -10,6 +11,7 @@ import { AFFINITIES, FORMS, MATERIAL_LIST, MATERIALS } from '../../data/forge';
 import { REALMS } from '../../data/realms';
 import { computeWeapon, TOTAL_WEAPONS, validateRecipe } from '../../lib/forge';
 import { shareWeapon } from '../../lib/shareCard';
+import { sfx } from '../../lib/audio';
 import { useReducedMotion } from '../../lib/hooks';
 import { useProgress } from '../../state/ProgressContext';
 import type { Affinity, FormId, MaterialId, WeaponResult } from '../../types';
@@ -45,7 +47,18 @@ export function Forge() {
     setResult(weapon);
     setStatus('');
     setPhase('forging');
-    timer.current = window.setTimeout(() => setPhase('done'), reduced ? 250 : 2600);
+    if (reduced) {
+      sfx.strike();
+    } else {
+      [0, 850, 1700].forEach((ms) => window.setTimeout(sfx.strike, ms));
+    }
+    timer.current = window.setTimeout(
+      () => {
+        setPhase('done');
+        sfx.reveal();
+      },
+      reduced ? 250 : 2600,
+    );
   };
 
   const reforge = () => {
@@ -208,7 +221,7 @@ export function Forge() {
                 <motion.div key="stage" className="stage-art" initial={false} exit={{ opacity: 0 }}>
                   <p className="stage-art__title">{phase === 'forging' ? 'Forging…' : 'The Unawakened Artifact'}</p>
                   {preview ? (
-                    <WeaponArt shape={preview.shape} affinity={preview.affinity} glow={phase === 'forging' ? 1 : 0.35} className="stage-art__weapon" />
+                    <ArtifactStage shape={preview.shape} affinity={preview.affinity} glow={phase === 'forging' ? 1 : 0.4} className="stage-art__weapon" />
                   ) : (
                     <div className="stage-art__empty">Choose a form to see its shape.</div>
                   )}

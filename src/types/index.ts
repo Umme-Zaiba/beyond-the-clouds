@@ -17,12 +17,24 @@ export type Provenance = 'original' | 'drama-canon';
 
 export interface Palette {
   skyTop: string;
+  skyMid: string;
   skyBottom: string;
   far: string;
   mid: string;
   near: string;
+  /** main light source: sun, moon, window light */
   glow: string;
+  /** secondary light: crystals, blossoms, orbs */
+  glow2: string;
   mist: string;
+}
+
+export interface SceneFeatures {
+  stars?: boolean;
+  petals?: boolean;
+  vines?: boolean;
+  embers?: boolean;
+  islands?: boolean;
 }
 
 export interface Realm {
@@ -33,6 +45,7 @@ export interface Realm {
   mood: 'light' | 'dark';
   lore: string[];
   palette: Palette;
+  features: SceneFeatures;
   seed: number;
   /** position on the world map, 0-100 */
   map: { x: number; y: number };
@@ -148,4 +161,5 @@ export interface Progress {
   materials: MaterialId[];
   forged: ForgedRecord[];
   trail: boolean;
+  sound: boolean;
 }

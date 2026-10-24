@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { SealButton } from '../../components/motion/JadeSeal';
 import { useReducedMotion } from '../../lib/hooks';
+import { sfx } from '../../lib/audio';
 import type { Material } from '../../types';
 
 interface Props {
@@ -56,8 +57,10 @@ export function GatherTrial({ material, onSuccess, onCancel }: Props) {
     const { start, width: w } = target.current;
     const rel = (angle.current - start + TAU) % TAU;
     if (rel <= w) {
+      sfx.gather();
       setPhase('win');
     } else {
+      sfx.fail();
       setFails((f) => f + 1);
       setPhase('fail');
     }

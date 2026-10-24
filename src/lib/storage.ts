@@ -11,6 +11,7 @@ export const initialProgress = (): Progress => ({
   materials: [...STARTER_MATERIALS],
   forged: [],
   trail: true,
+  sound: false,
 });
 
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
@@ -40,6 +41,7 @@ export function loadProgress(): Progress {
       materials: Array.from(new Set([...STARTER_MATERIALS, ...materials])),
       forged: forged.filter((f, i) => forged.findIndex((g) => g.id === f.id) === i),
       trail: typeof data.trail === 'boolean' ? data.trail : true,
+      sound: typeof data.sound === 'boolean' ? data.sound : false,
     };
   } catch {
     return base;

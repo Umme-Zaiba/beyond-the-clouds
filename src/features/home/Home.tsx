@@ -2,9 +2,10 @@ import { motion } from 'motion/react';
 import { ArrowDown } from 'lucide-react';
 import { Landscape } from '../../components/motion/Landscape';
 import { Mist } from '../../components/motion/Mist';
+import { Petals } from '../../components/motion/Petals';
+import { ArtifactStage } from '../../components/cards/ArtifactStage';
 import { SealLink } from '../../components/motion/JadeSeal';
 import { RealmCard, EntryCard } from '../../components/cards/Cards';
-import { WeaponArt } from '../../components/cards/WeaponArt';
 import { REALM_LIST } from '../../data/realms';
 import { ARCHIVE, CHARACTERS } from '../../data/archive';
 import { TOTAL_WEAPONS } from '../../lib/forge';
@@ -13,13 +14,15 @@ import { useProgress } from '../../state/ProgressContext';
 import type { Palette } from '../../types';
 
 const HERO_PALETTE: Palette = {
-  skyTop: '#c6d9d4',
-  skyBottom: '#f2eee5',
-  far: '#bcd1cc',
-  mid: '#97b8b0',
-  near: '#6f9a90',
-  glow: '#efd9a0',
-  mist: '#ffffff',
+  skyTop: '#070a28',
+  skyMid: '#3a3190',
+  skyBottom: '#f0a8c8',
+  far: '#5560b8',
+  mid: '#3a4194',
+  near: '#1c2160',
+  glow: '#ffe9b8',
+  glow2: '#9fe6ff',
+  mist: '#ffe4ef',
 };
 
 const TITLE = ['Beyond', 'the', 'Clouds'];
@@ -40,8 +43,12 @@ export function Home() {
   return (
     <>
       <section className="hero" ref={heroRef}>
-        <Landscape palette={HERO_PALETTE} seed={5} islands className="hero__scene" />
-        <Mist className="hero__mist" />
+        <Landscape palette={HERO_PALETTE} seed={5} features={{ stars: true, islands: true }} className="hero__scene" />
+        <Mist color="255,214,236" className="hero__mist" />
+        <Petals className="hero__petals" count={30} />
+        <div className="hero__artifact" aria-hidden="true">
+          <ArtifactStage shape="sword" affinity="wind" className="hero__stage" />
+        </div>
         <div className="hero__content">
           <motion.p
             className="eyebrow"
@@ -111,9 +118,9 @@ export function Home() {
             </SealLink>
           </div>
           <div className="forge-teaser__art" aria-hidden="true">
-            <WeaponArt shape="spear" affinity="flame" />
-            <WeaponArt shape="sword" affinity="wind" />
-            <WeaponArt shape="fan" affinity="ice" />
+            <ArtifactStage shape="spear" affinity="flame" />
+            <ArtifactStage shape="sword" affinity="wind" />
+            <ArtifactStage shape="fan" affinity="ice" />
           </div>
         </div>
       </section>

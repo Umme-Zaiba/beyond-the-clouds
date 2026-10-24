@@ -13,7 +13,7 @@ export function RealmCard({ realm }: { realm: Realm }) {
   const gathered = realm.materials.filter((m) => progress.materials.includes(m)).length;
   return (
     <Link to={`/realms/${realm.id}`} className="realm-card" data-mood={realm.mood}>
-      <Landscape palette={realm.palette} seed={realm.seed} islands={realm.id === 'cloudsea'} className="realm-card__art" />
+      <Landscape palette={realm.palette} seed={realm.seed} features={realm.features} className="realm-card__art" />
       <div className="realm-card__body">
         <span className="realm-card__native" aria-hidden="true">
           {realm.native}

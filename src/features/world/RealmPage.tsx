@@ -4,6 +4,7 @@ import { Check, Lock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Landscape } from '../../components/motion/Landscape';
 import { Mist } from '../../components/motion/Mist';
+import { Petals } from '../../components/motion/Petals';
 import { SealButton, SealLink } from '../../components/motion/JadeSeal';
 import { EntryCard } from '../../components/cards/Cards';
 import { GatherTrial } from './GatherTrial';
@@ -34,8 +35,9 @@ export function RealmPage() {
   return (
     <article className="realm" data-mood={realm.mood}>
       <div className="realm__scene" ref={sceneRef}>
-        <Landscape palette={realm.palette} seed={realm.seed} islands={realm.id === 'cloudsea'} embers={realm.id === 'ember'} />
-        <Mist color={realm.mood === 'dark' ? '201,131,94' : '255,255,255'} className="realm__mist" />
+        <Landscape palette={realm.palette} seed={realm.seed} features={realm.features} />
+        <Mist color={realm.id === 'ember' ? '255,154,107' : realm.id === 'jade' ? '143,166,255' : '255,225,236'} className="realm__mist" />
+        {realm.features.petals && <Petals className="realm__petals" count={26} />}
         <div className="realm__title">
           <p className="realm__native" aria-hidden="true">
             {realm.native}

@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { WeaponArt } from '../../components/cards/WeaponArt';
+import { ArtifactStage } from '../../components/cards/ArtifactStage';
 import { STAT_LABELS } from '../../data/forge';
 import { useReducedMotion } from '../../lib/hooks';
 import type { StatKey, WeaponResult } from '../../types';
@@ -42,7 +42,7 @@ export function WeaponCard({ weapon, compact = false, children }: Props) {
   return (
     <article className={`weapon-card${compact ? ' weapon-card--compact' : ''}`} data-rarity={weapon.rarity.id}>
       <div className="weapon-card__art">
-        <WeaponArt shape={weapon.form.id} affinity={weapon.affinity.id} runes={weapon.rarity.runes} title={`${weapon.name} ${weapon.title}`} />
+        <ArtifactStage shape={weapon.form.id} affinity={weapon.affinity.id} runes={weapon.rarity.runes} title={`${weapon.name} ${weapon.title}`} />
       </div>
       <div className="weapon-card__info">
         <p className="weapon-card__rarity" style={{ color: weapon.rarity.color }}>

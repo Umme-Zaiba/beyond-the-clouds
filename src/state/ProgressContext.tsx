@@ -10,6 +10,7 @@ type Action =
   | { type: 'material'; id: MaterialId }
   | { type: 'forge'; recipe: Recipe }
   | { type: 'trail'; on: boolean }
+  | { type: 'sound'; on: boolean }
   | { type: 'reset' };
 
 const addOnce = (list: string[], id: string) => (list.includes(id) ? list : [...list, id]);
@@ -37,8 +38,10 @@ function reducer(state: Progress, action: Action): Progress {
     }
     case 'trail':
       return { ...state, trail: action.on };
+    case 'sound':
+      return { ...state, sound: action.on };
     case 'reset':
-      return { ...initialProgress(), trail: state.trail };
+      return { ...initialProgress(), trail: state.trail, sound: state.sound };
   }
 }
 
@@ -50,6 +53,7 @@ interface ProgressApi {
   gatherMaterial: (id: MaterialId) => void;
   saveWeapon: (recipe: Recipe) => boolean;
   setTrail: (on: boolean) => void;
+  setSound: (on: boolean) => void;
   reset: () => void;
 }
 
@@ -66,6 +70,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const toggleBookmark = useCallback((id: string) => dispatch({ type: 'bookmark', id }), []);
   const gatherMaterial = useCallback((id: MaterialId) => dispatch({ type: 'material', id }), []);
   const setTrail = useCallback((on: boolean) => dispatch({ type: 'trail', on }), []);
+  const setSound = useCallback((on: boolean) => dispatch({ type: 'sound', on }), []);
   const reset = useCallback(() => dispatch({ type: 'reset' }), []);
 
   const api = useMemo<ProgressApi>(
@@ -81,9 +86,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         return isNew;
       },
       setTrail,
+      setSound,
       reset,
     }),
-    [progress, discoverRealm, discoverEntry, toggleBookmark, gatherMaterial, setTrail, reset],
+    [progress, discoverRealm, discoverEntry, toggleBookmark, gatherMaterial, setTrail, setSound, reset],
   );
 
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;
