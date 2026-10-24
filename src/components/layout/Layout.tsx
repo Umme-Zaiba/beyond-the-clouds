@@ -1,0 +1,131 @@
+import { useEffect } from 'react';
+import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
+import { Menu, Sparkles, X } from 'lucide-react';
+import { useState } from 'react';
+import { QiCursor } from '../motion/QiCursor';
+import { useProgress } from '../../state/ProgressContext';
+import { useReducedMotion } from '../../lib/hooks';
+import { TOTAL_WEAPONS } from '../../lib/forge';
+import { REALMS } from '../../data/realms';
+
+const NAV = [
+  { to: '/realms', label: 'Realms', glyph: '界' },
+  { to: '/forge', label: 'Forge', glyph: '锻' },
+  { to: '/archive', label: 'Archive', glyph: '宝' },
+  { to: '/collection', label: 'Collection', glyph: '云' },
+];
+
+/** The routes whose scenes are dark. The theme drives palette, cursor colour and canvas tint. */
+function themeFor(pathname: string): 'light' | 'dark' {
+  if (pathname.startsWith('/forge')) return 'dark';
+  const m = pathname.match(/^\/realms\/(\w+)/);
+  if (m && m[1] in REALMS) return REALMS[m[1] as keyof typeof REALMS].mood;
+  return 'light';
+}
+
+export function Layout() {
+  const { pathname } = useLocation();
+  const { progress, setTrail } = useProgress();
+  const reduced = useReducedMotion();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeFor(pathname);
+    setOpen(false);
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  const ink = themeFor(pathname) === 'dark';
+  const forged = progress.forged.length;
+
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <header className="nav">
+        <Link to="/" className="nav__brand" aria-label="Beyond the Clouds, home">
+          <span className="nav__mark" aria-hidden="true">
+            云
+          </span>
+          <span className="nav__name">Beyond the Clouds</span>
+        </Link>
+
+        <nav className={`nav__links${open ? ' is-open' : ''}`} aria-label="Primary">
+          {NAV.map((n) => (
+            <NavLink key={n.to} to={n.to} className={({ isActive }) => `nav__link${isActive ? ' is-active' : ''}`}>
+              <span className="nav__glyph" aria-hidden="true">
+                {n.glyph}
+              </span>
+              {n.label}
+              {n.to === '/collection' && forged > 0 && <span className="nav__count">{forged}</span>}
+            </NavLink>
+          ))}
+        </nav>
+
+        <button className="nav__toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </header>
+
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.main
+          id="main"
+          key={pathname}
+          className="page"
+          initial={reduced ? false : { opacity: 0, y: 14, filter: 'blur(6px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={reduced ? { opacity: 0 } : { opacity: 0, filter: 'blur(6px)' }}
+          transition={{ duration: reduced ? 0.12 : 0.34, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Outlet />
+        </motion.main>
+      </AnimatePresence>
+
+      {!reduced && <TalismanVeil routeKey={pathname} dark={ink} />}
+
+      <footer className="footer">
+        <div className="footer__inner">
+          <div>
+            <p className="footer__title">Beyond the Clouds</p>
+            <p className="footer__note">
+              An original world inspired by the <em>mood</em> of xianxia dramas. Every realm, character and artifact here is invented for this
+              site and is not canon from any drama.
+            </p>
+          </div>
+          <div className="footer__tools">
+            <button className="chip" onClick={() => setTrail(!progress.trail)} aria-pressed={progress.trail}>
+              <Sparkles size={14} /> Qi trail {progress.trail ? 'on' : 'off'}
+            </button>
+            <p className="footer__stat">
+              {forged} of {TOTAL_WEAPONS} weapons forged
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      <QiCursor />
+    </>
+  );
+}
+
+/** A talisman paper that burns across the screen between pages. */
+function TalismanVeil({ routeKey, dark }: { routeKey: string; dark: boolean }) {
+  return (
+    <motion.div
+      key={routeKey}
+      className={`veil${dark ? ' veil--dark' : ''}`}
+      aria-hidden="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: [0, 1, 1, 0] }}
+      transition={{ duration: 0.85, times: [0, 0.3, 0.55, 1], ease: 'easeInOut' }}
+      style={{ pointerEvents: 'none' }}
+    >
+      <div className="veil__paper">
+        <span className="veil__glyph">云</span>
+        <span className="veil__burn" />
+      </div>
+    </motion.div>
+  );
+}
