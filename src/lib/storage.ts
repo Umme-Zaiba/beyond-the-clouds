@@ -1,20 +1,30 @@
-import { MATERIALS, STARTER_MATERIALS } from '../data/forge';
-import type { ForgedRecord, MaterialId, Progress } from '../types';
+import type { ForgedRecord, Progress } from '../types';
 import { isRecipe, normalizeRecipe, recipeId } from './forge';
 
-const KEY = 'btc:progress:v1';
+const KEY = 'btc:progress:v3';
 
 export const initialProgress = (): Progress => ({
-  realms: [],
+  levels: {},
+  daily: {},
   entries: [],
   bookmarks: [],
-  materials: [...STARTER_MATERIALS],
   forged: [],
   trail: true,
   sound: false,
 });
 
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+
+function starMap(v: unknown): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (v && typeof v === 'object') {
+    for (const [k, n] of Object.entries(v as Record<string, unknown>)) {
+      const stars = Math.round(Number(n));
+      if (stars >= 1 && stars <= 3) out[k] = stars;
+    }
+  }
+  return out;
+}
 
 /** Browser storage can be empty, blocked or hand-edited, so every field is re-validated. */
 export function loadProgress(): Progress {
@@ -24,7 +34,6 @@ export function loadProgress(): Progress {
     if (!raw) return base;
     const data = JSON.parse(raw) as Partial<Record<keyof Progress, unknown>>;
 
-    const materials = strings(data.materials).filter((m): m is MaterialId => m in MATERIALS);
     const forged: ForgedRecord[] = [];
     if (Array.isArray(data.forged)) {
       for (const f of data.forged as ForgedRecord[]) {
@@ -35,10 +44,10 @@ export function loadProgress(): Progress {
       }
     }
     return {
-      realms: strings(data.realms),
+      levels: starMap(data.levels),
+      daily: starMap(data.daily),
       entries: strings(data.entries),
       bookmarks: strings(data.bookmarks),
-      materials: Array.from(new Set([...STARTER_MATERIALS, ...materials])),
       forged: forged.filter((f, i) => forged.findIndex((g) => g.id === f.id) === i),
       trail: typeof data.trail === 'boolean' ? data.trail : true,
       sound: typeof data.sound === 'boolean' ? data.sound : false,

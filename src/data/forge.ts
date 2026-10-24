@@ -58,7 +58,7 @@ export const MATERIALS: Record<MaterialId, Material> = {
     profile: { might: 1, grace: 3, resonance: 3, spirit: 3 },
     blurb: 'Pale stone that holds a little night inside it, even at noon.',
     starter: true,
-    site: 'the Moonwell basin',
+    unlockStars: 0,
   },
   stormglass: {
     id: 'stormglass',
@@ -69,7 +69,7 @@ export const MATERIALS: Record<MaterialId, Material> = {
     profile: { might: 2, grace: 4, resonance: 2, spirit: 2 },
     blurb: 'Glass fused where lightning struck the terrace rail, still humming.',
     starter: false,
-    site: 'the Lightning Rail',
+    unlockStars: 5,
   },
   'celestial-jade': {
     id: 'celestial-jade',
@@ -80,7 +80,7 @@ export const MATERIALS: Record<MaterialId, Material> = {
     profile: { might: 2, grace: 3, resonance: 2, spirit: 4 },
     blurb: 'Jade that grew toward the sky instead of the ground.',
     starter: true,
-    site: 'the Singing Seam',
+    unlockStars: 0,
   },
   'frostbloom-resin': {
     id: 'frostbloom-resin',
@@ -91,7 +91,7 @@ export const MATERIALS: Record<MaterialId, Material> = {
     profile: { might: 1, grace: 2, resonance: 4, spirit: 3 },
     blurb: 'Amber from the one tree in the hollow that flowers in winter.',
     starter: false,
-    site: 'the Winter Grove',
+    unlockStars: 5,
   },
   'phoenix-ember': {
     id: 'phoenix-ember',
@@ -102,7 +102,7 @@ export const MATERIALS: Record<MaterialId, Material> = {
     profile: { might: 4, grace: 2, resonance: 3, spirit: 3 },
     blurb: 'A coal that remembers being a bird. It will not go out.',
     starter: false,
-    site: 'the Rising Vent',
+    unlockStars: 3,
   },
   'cinder-iron': {
     id: 'cinder-iron',
@@ -113,7 +113,7 @@ export const MATERIALS: Record<MaterialId, Material> = {
     profile: { might: 5, grace: 1, resonance: 2, spirit: 2 },
     blurb: 'Black iron that has been hammered by more than one lifetime.',
     starter: false,
-    site: 'the Anvil Terraces',
+    unlockStars: 6,
   },
 };
 

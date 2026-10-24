@@ -225,6 +225,11 @@ export function setSoundEnabled(on: boolean) {
 }
 
 export const sfx = {
+  /** aliases used by the game screens */
+  press: () => bell(SCALE[5], 0.1, 1.6),
+  touch: () => bell(SCALE[2 + Math.floor(Math.random() * 4)], 0.07, 1.1),
+  clear: () => [SCALE[3], SCALE[5], SCALE[7]].forEach((f, i) => bell(f, 0.11, 2.4, i * 0.13)),
+  miss: () => thud(150, 0.28),
   seal: () => bell(SCALE[5], 0.1, 1.6),
   tap: () => bell(SCALE[3], 0.06, 0.9),
   gather: () => [SCALE[3], SCALE[5], SCALE[7]].forEach((f, i) => bell(f, 0.11, 2.4, i * 0.13)),

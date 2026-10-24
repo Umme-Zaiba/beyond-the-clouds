@@ -5,7 +5,7 @@ import { Check, Image as ImageIcon, Lock, RotateCcw } from 'lucide-react';
 import { WeaponArt } from '../../components/cards/WeaponArt';
 import { ArtifactStage } from '../../components/cards/ArtifactStage';
 import { Mist } from '../../components/motion/Mist';
-import { SealButton } from '../../components/motion/JadeSeal';
+import { SealButton } from '../../components/motion/Seal';
 import { WeaponCard } from './WeaponCard';
 import { AFFINITIES, FORMS, MATERIAL_LIST, MATERIALS } from '../../data/forge';
 import { REALMS } from '../../data/realms';
@@ -13,6 +13,7 @@ import { computeWeapon, TOTAL_WEAPONS, validateRecipe } from '../../lib/forge';
 import { shareWeapon } from '../../lib/shareCard';
 import { sfx } from '../../lib/audio';
 import { useReducedMotion } from '../../lib/hooks';
+import { ownedMaterials } from '../../lib/game';
 import { useProgress } from '../../state/ProgressContext';
 import type { Affinity, FormId, MaterialId, WeaponResult } from '../../types';
 
@@ -35,7 +36,8 @@ export function Forge() {
     if (phase === 'done') resultRef.current?.focus();
   }, [phase]);
 
-  const problem = validateRecipe({ form, materials: mats, affinity }, progress.materials);
+  const owned = ownedMaterials(progress);
+  const problem = validateRecipe({ form, materials: mats, affinity }, owned);
   const alreadySaved = !!result && progress.forged.some((f) => f.id === result.id);
 
   const toggleMat = (id: MaterialId) =>
@@ -133,7 +135,7 @@ export function Forge() {
             </legend>
             <div className="choices choices--3">
               {MATERIAL_LIST.map((m) => {
-                const have = progress.materials.includes(m.id);
+                const have = owned.includes(m.id);
                 const on = mats.includes(m.id);
                 return (
                   <label key={m.id} className={`choice choice--mat${on ? ' is-on' : ''}${have ? '' : ' is-locked'}`}>
@@ -150,7 +152,9 @@ export function Forge() {
                       {have ? (
                         AFFINITIES[m.affinity].name
                       ) : (
-                        <Link to={`/realms/${m.realm}`}>Gather in {REALMS[m.realm].name}</Link>
+                        <Link to={`/realms/${m.realm}`}>
+                          {m.unlockStars} stars in {REALMS[m.realm].name}
+                        </Link>
                       )}
                     </span>
                   </label>

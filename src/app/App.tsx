@@ -1,6 +1,9 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { ProgressProvider } from '../state/ProgressContext';
+import { TimeProvider } from '../state/TimeContext';
+import { LevelPage } from '../features/play/LevelPage';
+import { Daily } from '../features/daily/Daily';
 import { Layout } from '../components/layout/Layout';
 import { Home } from '../features/home/Home';
 import { RealmMap } from '../features/world/RealmMap';
@@ -26,6 +29,7 @@ function NotFound() {
 
 export function App() {
   return (
+    <TimeProvider>
     <ProgressProvider>
       <BrowserRouter>
         <Routes>
@@ -33,6 +37,8 @@ export function App() {
             <Route index element={<Home />} />
             <Route path="realms" element={<RealmMap />} />
             <Route path="realms/:id" element={<RealmPage />} />
+            <Route path="play/:levelId" element={<LevelPage />} />
+            <Route path="daily" element={<Daily />} />
             <Route
               path="forge"
               element={
@@ -49,5 +55,6 @@ export function App() {
         </Routes>
       </BrowserRouter>
     </ProgressProvider>
+    </TimeProvider>
   );
 }

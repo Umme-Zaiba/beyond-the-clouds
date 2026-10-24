@@ -1,41 +1,45 @@
-import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Check, Lock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Landscape } from '../../components/motion/Landscape';
 import { Mist } from '../../components/motion/Mist';
 import { Petals } from '../../components/motion/Petals';
-import { SealButton, SealLink } from '../../components/motion/JadeSeal';
+import { SealLink } from '../../components/motion/Seal';
 import { EntryCard } from '../../components/cards/Cards';
-import { GatherTrial } from './GatherTrial';
+import { StarsRow } from '../play/StarsRow';
 import { REALMS, REALM_LIST } from '../../data/realms';
 import { ARCHIVE_BY_ID } from '../../data/archive';
 import { AFFINITIES, MATERIALS } from '../../data/forge';
+import { isLevelUnlocked, isRealmUnlocked, levelStars, ownedMaterials, realmStars } from '../../lib/game';
 import { useParallax, useReducedMotion } from '../../lib/hooks';
+import { realmPalette, sceneFeatures } from '../../lib/time';
 import { useProgress } from '../../state/ProgressContext';
-import type { MaterialId, RealmId } from '../../types';
+import { useTime } from '../../state/TimeContext';
+import type { GameKind, RealmId } from '../../types';
+
+const KIND_NAME: Record<GameKind, string> = { memory: 'Memory', steady: 'Steady breath', scale: 'Spirit-stone scale', quiz: 'Lore trial' };
 
 export function RealmPage() {
   const { id } = useParams();
   const realm = id && id in REALMS ? REALMS[id as RealmId] : null;
-  const { progress, discoverRealm, gatherMaterial } = useProgress();
+  const { progress } = useProgress();
+  const { time } = useTime();
   const reduced = useReducedMotion();
   const sceneRef = useParallax<HTMLDivElement>(!reduced);
-  const [trial, setTrial] = useState<MaterialId | null>(null);
-
-  useEffect(() => {
-    if (realm) discoverRealm(realm.id);
-  }, [realm, discoverRealm]);
 
   if (!realm) return <Navigate to="/realms" replace />;
 
+  const open = isRealmUnlocked(progress, realm);
+  const stars = realmStars(progress, realm);
+  const owned = ownedMaterials(progress);
+  const previous = REALM_LIST[REALM_LIST.findIndex((r) => r.id === realm.id) - 1];
   const entries = [...realm.characters, ...realm.artifacts].map((e) => ARCHIVE_BY_ID[e]).filter(Boolean);
-  const next = REALM_LIST[(REALM_LIST.findIndex((r) => r.id === realm.id) + 1) % REALM_LIST.length];
+  const features = sceneFeatures(realm.features, time);
 
   return (
-    <article className="realm" data-mood={realm.mood}>
+    <article className="realm" data-realm={realm.id}>
       <div className="realm__scene" ref={sceneRef}>
-        <Landscape palette={realm.palette} seed={realm.seed} features={realm.features} />
+        <Landscape palette={realmPalette(realm, time)} seed={realm.seed} features={features} />
         <Mist color={realm.id === 'ember' ? '255,154,107' : realm.id === 'jade' ? '143,166,255' : '255,225,236'} className="realm__mist" />
         {realm.features.petals && <Petals className="realm__petals" count={26} />}
         <div className="realm__title">
@@ -57,54 +61,88 @@ export function RealmPage() {
           ))}
         </section>
 
-        <section className="realm__gather" aria-label="Gathering sites">
-          <p className="eyebrow">Spiritual trials</p>
-          <h2>Gathering sites</h2>
-          <p className="lede">Each material is earned in a short trial. Bring what you gather to the Forge.</p>
+        <section aria-label="Trials">
+          <p className="eyebrow">The trials</p>
+          <h2>Three trials</h2>
+          {!open && (
+            <p className="note">
+              <Lock size={14} /> Earn {realm.entryStars} stars in {previous?.name} to enter.{' '}
+              {previous && (
+                <Link to={`/realms/${previous.id}`} className="linkish">
+                  Go there
+                </Link>
+              )}
+            </p>
+          )}
+          <ol className="levels">
+            {realm.levels.map((lv, i) => {
+              const unlocked = isLevelUnlocked(progress, realm, i);
+              const s = levelStars(progress, lv.id);
+              const body = (
+                <>
+                  <span className="level__num" aria-hidden="true">
+                    {unlocked ? i + 1 : <Lock size={16} />}
+                  </span>
+                  <span className="level__info">
+                    <strong>{lv.title}</strong>
+                    <small>
+                      {KIND_NAME[lv.kind]} · {lv.brief}
+                    </small>
+                  </span>
+                  <StarsRow stars={s} size={22} animate={false} />
+                </>
+              );
+              return (
+                <li key={lv.id}>
+                  {unlocked ? (
+                    <Link to={`/play/${lv.id}`} className="level">
+                      {body}
+                    </Link>
+                  ) : (
+                    <div className="level is-locked" aria-disabled="true">
+                      {body}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+          <p className="note">{stars} of 9 stars earned here.</p>
+        </section>
+
+        <section className="realm__gather" aria-label="Materials">
+          <p className="eyebrow">Materials</p>
+          <h2>Earned by stars</h2>
           <ul className="gather-list">
             {realm.materials.map((mid) => {
               const m = MATERIALS[mid];
-              const have = progress.materials.includes(mid);
-              const open = trial === mid;
+              const have = owned.includes(mid);
               return (
                 <li key={mid} className={`gather${have ? ' is-have' : ''}`}>
                   <div className="gather__row">
-                    <span className="gather__gem" style={{ background: `linear-gradient(150deg, ${AFFINITIES[m.affinity].colors[0]}, ${AFFINITIES[m.affinity].colors[1]})` }} aria-hidden="true" />
+                    <span className="gather__gem" style={{ background: `linear-gradient(150deg, ${AFFINITIES[m.affinity].colors[0]}, ${AFFINITIES[m.affinity].colors[1]})`, opacity: have ? 1 : 0.4 }} aria-hidden="true" />
                     <div className="gather__info">
                       <h3>
                         {m.name} <span className="tag">{AFFINITIES[m.affinity].name}</span>
                       </h3>
                       <p>{m.blurb}</p>
                     </div>
-                    {have ? (
-                      <span className="gather__state">
-                        <Check size={16} /> Gathered
-                      </span>
-                    ) : (
-                      <SealButton variant="ghost" onClick={() => setTrial(open ? null : mid)} aria-expanded={open}>
-                        {open ? 'Close' : 'Begin trial'}
-                      </SealButton>
-                    )}
+                    <span className="gather__state">
+                      {have ? (
+                        <>
+                          <Check size={16} /> {m.starter ? 'Yours from the start' : 'Earned'}
+                        </>
+                      ) : (
+                        <>
+                          <Lock size={14} /> {m.unlockStars} stars here
+                        </>
+                      )}
+                    </span>
                   </div>
-                  {open && !have && (
-                    <GatherTrial
-                      material={m}
-                      onCancel={() => setTrial(null)}
-                      onSuccess={() => {
-                        gatherMaterial(mid);
-                        setTrial(null);
-                      }}
-                    />
-                  )}
                 </li>
               );
             })}
           </ul>
-          {!realm.materials.every((m) => progress.materials.includes(m)) && (
-            <p className="note">
-              <Lock size={14} /> Materials you have not gathered stay locked in the Forge.
-            </p>
-          )}
         </section>
 
         <section aria-label="Connected discoveries">
@@ -120,9 +158,6 @@ export function RealmPage() {
         <div className="realm__nav">
           <SealLink to="/forge" glyph="锻">
             Take it to the Forge
-          </SealLink>
-          <SealLink to={`/realms/${next.id}`} variant="ghost">
-            Next: {next.name}
           </SealLink>
           <Link to="/realms" className="linkish">
             Back to the map

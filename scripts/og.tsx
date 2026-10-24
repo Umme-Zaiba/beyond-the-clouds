@@ -43,9 +43,9 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <text x="72" y="196" font-family="Georgia, serif" font-size="20" letter-spacing="5" fill="#c4ecff">AN INTERACTIVE XIANXIA WORLD</text>
   <text x="68" y="318" font-family="Georgia, serif" font-size="112" fill="url(#t)">Beyond</text>
   <text x="68" y="424" font-family="Georgia, serif" font-size="112" fill="url(#t)">the Clouds</text>
-  <text x="72" y="486" font-family="Georgia, serif" font-style="italic" font-size="30" fill="#f0cf8c">Wander realms. Gather materials. Forge a legend.</text>
+  <text x="72" y="486" font-family="Georgia, serif" font-style="italic" font-size="30" fill="#f0cf8c">Ascend the clouds. Pass the trials. Forge a legend.</text>
   <rect x="72" y="520" width="240" height="46" rx="23" fill="#8f88ff"/>
-  <text x="192" y="550" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="18" fill="#071022">Enter the Celestial Realm</text>
+  <text x="192" y="550" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="18" fill="#071022">Begin the Ascent</text>
 </svg>`;
 
 const png = new Resvg(svg, { font: { loadSystemFonts: true, defaultFontFamily: 'Georgia' } }).render().asPng();

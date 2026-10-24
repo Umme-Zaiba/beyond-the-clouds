@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { Image as ImageIcon, Trash2 } from 'lucide-react';
 import { WeaponCard } from '../forge/WeaponCard';
 import { EntryCard } from '../../components/cards/Cards';
-import { SealButton, SealLink } from '../../components/motion/JadeSeal';
+import { SealButton, SealLink } from '../../components/motion/Seal';
 import { ARCHIVE, ARCHIVE_BY_ID } from '../../data/archive';
 import { AFFINITIES, MATERIAL_LIST } from '../../data/forge';
-import { REALMS, REALM_LIST } from '../../data/realms';
+import { REALMS, MAX_STARS } from '../../data/realms';
+import { ownedMaterials, rankFor, totalStars, dailyStreak, todayKey } from '../../lib/game';
 import { computeWeapon, TOTAL_WEAPONS } from '../../lib/forge';
 import { shareWeapon } from '../../lib/shareCard';
 import { useProgress } from '../../state/ProgressContext';
@@ -16,25 +17,32 @@ export function Collection() {
   const [note, setNote] = useState('');
   const [confirm, setConfirm] = useState(false);
 
+  const stars = totalStars(progress);
+  const rank = rankFor(stars);
+  const owned = ownedMaterials(progress);
+  const streak = dailyStreak(progress.daily, todayKey());
   const weapons = progress.forged.map((f) => computeWeapon(f.recipe));
   const marked = progress.bookmarks.map((b) => ARCHIVE_BY_ID[b]).filter(Boolean);
-  const empty = weapons.length === 0 && marked.length === 0 && progress.realms.length === 0 && progress.entries.length === 0;
+  const empty = weapons.length === 0 && marked.length === 0 && stars === 0 && progress.entries.length === 0;
 
   return (
     <div>
       <header className="page-head">
         <p className="eyebrow">Collect</p>
-        <h1>Your Collection</h1>
-        <p className="lede">Saved in this browser, so it will still be here when you come back. No account needed.</p>
+        <h1>{rank.title}</h1>
+        <p className="lede">
+          {rank.next ? `${rank.next.need} more ${rank.next.need === 1 ? 'star' : 'stars'} to become a ${rank.next.title}. ` : 'You have reached the highest rank. '}
+          Saved in this browser, so it will still be here when you come back. {streak > 0 ? `Daily streak: ${streak}.` : ''}
+        </p>
       </header>
 
       <section className="progress" aria-label="Progress">
         <div className="progress__cell">
-          <strong>{progress.realms.length}/{REALM_LIST.length}</strong>
-          <span>Realms found</span>
+          <strong>{stars}/{MAX_STARS}</strong>
+          <span>Stars earned</span>
         </div>
         <div className="progress__cell">
-          <strong>{progress.materials.length}/{MATERIAL_LIST.length}</strong>
+          <strong>{owned.length}/{MATERIAL_LIST.length}</strong>
           <span>Materials gathered</span>
         </div>
         <div className="progress__cell">
@@ -49,9 +57,9 @@ export function Collection() {
 
       {empty && (
         <div className="empty">
-          <p>Nothing here yet. Your journey begins in the realms.</p>
-          <SealLink to="/realms" glyph="界">
-            Explore the realms
+          <p>Nothing here yet. Your trials begin in the first realm.</p>
+          <SealLink to="/realms/cloudsea" glyph="界">
+            Begin the trials
           </SealLink>
         </div>
       )}
@@ -60,13 +68,13 @@ export function Collection() {
         <h2>Materials</h2>
         <ul className="mat-row">
           {MATERIAL_LIST.map((m) => {
-            const have = progress.materials.includes(m.id);
+            const have = owned.includes(m.id);
             return (
               <li key={m.id} className={have ? 'is-have' : 'is-locked'}>
                 <span className="gather__gem" style={{ background: `linear-gradient(150deg, ${AFFINITIES[m.affinity].colors[0]}, ${AFFINITIES[m.affinity].colors[1]})`, opacity: have ? 1 : 0.3 }} aria-hidden="true" />
                 <span>
                   <strong>{m.name}</strong>
-                  <small>{have ? AFFINITIES[m.affinity].name : <Link to={`/realms/${m.realm}`}>{REALMS[m.realm].name}</Link>}</small>
+                  <small>{have ? AFFINITIES[m.affinity].name : <Link to={`/realms/${m.realm}`}>{m.unlockStars} stars in {REALMS[m.realm].name}</Link>}</small>
                 </span>
               </li>
             );

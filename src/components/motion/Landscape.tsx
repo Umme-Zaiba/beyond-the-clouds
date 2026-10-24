@@ -7,6 +7,8 @@ interface Props {
   seed: number;
   className?: string;
   features?: SceneFeatures;
+  /** draw the sky and sun; turn off to float the ridges over a shared sky */
+  sky?: boolean;
   children?: ReactNode;
 }
 
@@ -17,7 +19,7 @@ const depth = (d: number): CSSProperties => ({ ['--depth' as string]: d });
  * lit windows and hanging crystals, and a bright sea of cloud. Layers drift by depth when an
  * ancestor sets --px/--py/--scroll.
  */
-export function Landscape({ palette, seed, className = '', features = {}, children }: Props) {
+export function Landscape({ palette, seed, className = '', features = {}, sky = true, children }: Props) {
   const uid = useId().replace(/:/g, '');
   const paths = useMemo(
     () => ({
@@ -71,17 +73,19 @@ export function Landscape({ palette, seed, className = '', features = {}, childr
           </filter>
         </defs>
 
-        <rect width="1600" height="900" fill={`url(#${uid}-sky)`} />
+        {sky && <rect width="1600" height="900" fill={`url(#${uid}-sky)`} />}
 
         {features.stars &&
           stars.map((s, i) => (
             <circle key={i} className="ls-star" cx={s.x} cy={s.y} r={s.s} fill="#fff" style={{ animationDelay: `${-s.d}s` }} />
           ))}
 
-        <g className="ls-layer" style={depth(0.1)}>
-          <circle cx="1150" cy="270" r="480" fill={`url(#${uid}-glow)`} />
-          <circle cx="1150" cy="270" r="58" fill={palette.glow} opacity="0.95" />
-        </g>
+        {sky && (
+          <g className="ls-layer" style={depth(0.1)}>
+            <circle cx="1150" cy="270" r="480" fill={`url(#${uid}-glow)`} />
+            <circle cx="1150" cy="270" r="58" fill={palette.glow} opacity="0.95" />
+          </g>
+        )}
 
         <g className="ls-layer" style={depth(0.25)}>
           <path d={paths.far} fill={palette.far} />

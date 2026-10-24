@@ -1,0 +1,298 @@
+/* The scroll-first journey: one pinned stage, seven scenes, a flying sword. */
+
+.c-cloud {
+  fill: var(--cloud);
+}
+.c-glow {
+  fill: var(--glow);
+}
+.c-ink {
+  fill: var(--ink-art);
+}
+.s-glow {
+  stroke: var(--glow2);
+}
+.stop-pink {
+  stop-color: var(--glow2);
+}
+.stop-glow {
+  stop-color: var(--glow);
+}
+
+.ascent {
+  position: relative;
+}
+.ascent__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  color: var(--card-fg);
+}
+.ascent__sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bottom) 100%);
+  background-size: 100% 300%;
+  background-position: 0 calc((1 - var(--p, 0)) * 100%);
+}
+.ascent__stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+.scene__svg,
+.scene__landscape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.scene__mist {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* the individual `translate` property drives parallax, so scene animations can still use `transform` */
+.sc-layer {
+  translate: calc(var(--l, 0) * var(--d, 0) * -170px) calc(var(--l, 0) * var(--d, 0) * -70px);
+}
+.sc-whale {
+  animation: whale-drift 30s ease-in-out infinite alternate;
+}
+@keyframes whale-drift {
+  from {
+    transform: translateX(-90px);
+  }
+  to {
+    transform: translateX(90px);
+  }
+}
+.sc-bob {
+  animation: bob2 9s ease-in-out infinite alternate;
+}
+@keyframes bob2 {
+  from {
+    transform: translateY(-10px);
+  }
+  to {
+    transform: translateY(10px);
+  }
+}
+.sc-sway {
+  transform-origin: 800px 150px;
+  animation: silk 7s ease-in-out infinite alternate;
+}
+@keyframes silk {
+  from {
+    transform: rotate(-1.6deg);
+  }
+  to {
+    transform: rotate(1.6deg);
+  }
+}
+
+.ascent__leaves,
+.ascent__blossoms {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.ascent__trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ascent__trail-glow {
+  stroke: var(--glow2);
+  opacity: 0.3;
+}
+.ascent__trail-line {
+  stroke: var(--glow);
+  opacity: 0.55;
+}
+.ascent__sword {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform;
+  filter: drop-shadow(0 0 22px var(--glow2));
+}
+.ascent__sword svg {
+  display: block;
+  height: 100%;
+  width: auto;
+}
+
+/* chapter text */
+.ascent__cards {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.card {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: min(520px, calc(100% - 32px));
+  padding: clamp(20px, 3vw, 34px);
+  border-radius: 26px;
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow);
+  color: var(--card-fg);
+  opacity: 0;
+}
+.card--left {
+  left: clamp(16px, 6vw, 96px);
+}
+.card--right {
+  right: clamp(60px, 7vw, 120px);
+}
+.card h2 {
+  color: var(--card-fg);
+  margin-bottom: 0.5em;
+}
+.card p {
+  color: var(--card-muted);
+}
+.card p:last-child {
+  margin-bottom: 0;
+}
+.card .eyebrow {
+  color: var(--eyebrow);
+}
+.card--ascent {
+  width: min(780px, calc(100% - 32px));
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  left: clamp(20px, 6vw, 96px);
+}
+.card--ascent .hero__title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.28em;
+  font-size: clamp(3.4rem, 9.4vw, 8.4rem);
+  line-height: 0.96;
+  margin: 0 0 22px;
+  color: var(--hero-fg);
+  text-shadow: 0 4px 40px var(--title-shadow);
+}
+.card--ascent .hero__word {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--hero-fg);
+  filter: none;
+  padding: 0;
+}
+.card__lede {
+  font-size: 1.15rem;
+  max-width: 44ch;
+  color: var(--card-fg) !important;
+  text-shadow: 0 1px 18px var(--title-shadow);
+}
+.card .hero__hint {
+  color: var(--card-fg);
+  text-shadow: 0 1px 14px var(--title-shadow);
+  margin: 14px 0 0;
+  font-size: 0.86rem;
+}
+.card--ascent .eyebrow {
+  text-shadow: 0 1px 14px var(--title-shadow);
+}
+
+.ascent__rail {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ascent__rail button {
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--card-fg);
+  background: transparent;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: transform 0.25s, opacity 0.25s, background 0.25s, box-shadow 0.25s;
+}
+.ascent__rail button[data-active='1'] {
+  background: var(--card-fg);
+  opacity: 1;
+  transform: scale(1.35);
+  box-shadow: 0 0 12px var(--glow2);
+}
+.ascent__skip {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 5;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  color: var(--card-fg);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+.ascent__skip:hover {
+  box-shadow: 0 0 18px var(--glow2);
+}
+
+@media (max-width: 760px) {
+  .card,
+  .card--left,
+  .card--right {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    top: auto;
+    bottom: 68px;
+    translate: none;
+    padding: 18px 20px;
+  }
+  .card--ascent {
+    top: 50%;
+    bottom: auto;
+    translate: 0 -50%;
+    padding: 0;
+  }
+  .ascent__rail {
+    right: 8px;
+    gap: 10px;
+  }
+  .ascent__skip {
+    bottom: 14px;
+    right: 12px;
+  }
+}

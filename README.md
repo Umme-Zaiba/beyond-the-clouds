@@ -1,39 +1,43 @@
 # Beyond the Clouds
 
-An interactive xianxia world: wander three original realms, pass spiritual trials to gather materials, forge a weapon in the Divine Forge, and keep what you find. Inspired by the *mood* of xianxia dramas; **every realm, character and artifact is original** and is not canon from any drama.
+An interactive xianxia world. Scroll up through a sea of clouds on a flying sword, then pass memory, breath, scale and lore trials across three realms, win materials, and forge a weapon at the Divine Forge. **Every realm, character and artifact is original** and is not canon from any drama.
 
-## The goal
+## The experience
 
-> Make a visitor feel they have stepped into a xianxia world within five seconds, give them one ritual worth doing (forging a weapon), and hand them something worth sharing.
+1. **Scroll first.** A pinned stage carries a flying sword through seven scenes: the sea of clouds and a whale of white mist, the floating isle of the red maple, the crescent moon gate, the flower arch, the golden court and the trial gate. Each scene is a hand-built SVG, and the text of each chapter is fair game later.
+2. **Then the trials.** Nine trials in three realms: *Seal Memory*, *Steady Breath*, a *Spirit-Stone Scale* puzzle and the *Lore Trial*, a quiz on what you just read. Up to three stars each. Stars open the next realm and award forge materials.
+3. **Then the forge.** Pick a form, two materials and an element; the same choices always forge the same weapon (135 in all), with a shareable 1080x1350 card.
+4. **Come back daily.** One seeded puzzle a day, the same for everyone, with a copyable result and a streak.
 
-- **First five seconds:** a luminous night sky, floating lit palaces, falling petals, a rune-circle sword that tilts toward the cursor, and a cursor that is itself a sword leaving a qi trail.
-- **One ritual:** gather materials in the realms, then forge. The result is deterministic, so every one of the 135 weapons is plannable and collectable.
-- **One share artifact:** each forged weapon renders to a 1080x1350 share card (Web Share, or PNG download).
+## The sky follows your clock
+
+Morning, afternoon, evening and night are real themes: bright and airy in the morning and afternoon, a rose-and-plum dusk in the evening, deep indigo at night. The site reads the visitor's local time by default and can be pinned to any sky with the button in the nav. Every realm keeps its own colours at every hour.
 
 ## Interaction language
 
 | Element | Behaviour |
 | --- | --- |
 | Cursor | A sword with a fading qi trail, sparks on movement, ripple on tap. Touch devices get the trail without the sword. |
-| Buttons | Jade seals that crack when pressed |
+| Buttons | Seals that crack when pressed |
 | Page change | A talisman burns across the screen |
-| Realm map | Mist parts over a realm on hover, focus or visit |
-| Scrolling | Landscape layers drift at different depths |
+| Seal circle | Eight trigrams, a ring of characters and a lotus, turning slowly |
+| Scroll | A sword flies a path through the scenes, leaving a trail; layers drift at different depths |
 
-Everything respects `prefers-reduced-motion`, and the qi trail can be switched off in the footer.
+Everything respects `prefers-reduced-motion`, and the qi trail can be switched off in the footer. Sound is off by default (synthesised with Web Audio, no audio files).
 
 ## Stack
 
-React 18, TypeScript, Vite, React Router, Motion, Lucide. No backend: progress lives in `localStorage` (validated on load). Forge rules are pure functions in `src/lib/forge.ts` and are tested with Vitest.
+React 18, TypeScript, Vite, React Router, Motion, Lucide. No backend: progress lives in `localStorage` (validated on load). The forge rules, star rules, puzzle generators and daily challenge are pure functions with Vitest tests.
 
 ```
 src/
   app/            routes
-  components/     layout, motion (cursor, mist, landscape, seals), cards
-  features/       home, world, forge, archive, collection
-  data/           realms, archive entries, forge tables (typed)
-  lib/            forge rules, storage, share card, landscape generator
-  state/          progress context
+  components/     layout, motion (cursor, mist, landscape, seals, petals), cards
+  features/       home (ascent + scenes), world, play, daily, forge, archive, collection
+  data/           realms and trials, story chapters, archive entries, forge tables
+  lib/            forge and game rules, time of day, storage, share card, audio
+  state/          progress and time-of-day contexts
+  styles/         global, night, time (tokens per hour), game, ascent
 ```
 
 ## Develop
@@ -42,18 +46,18 @@ src/
 npm install
 npm run dev     # http://localhost:5173
 npm run build   # typecheck + production build
-npm test        # forge rule tests
+npm test        # forge, star and puzzle rules
+npm run og      # regenerate public/og.png
 ```
 
 ## Content registry
 
-Archive entries carry a `provenance` field (`original` or `drama-canon`). Everything shipped today is `original`; the UI labels it on every card and page so verified drama facts and invented lore never mix.
+Archive entries carry a `provenance` field (`original` or `drama-canon`). Everything shipped is `original`, and the UI labels it on every card.
+
+## Other directions
+
+A calmer, non-fantasy version (lands, instruments and an almanac, with nature-only sound) is kept on the local `islamic-journey` branch for a possible separate site.
 
 ## Deploy
 
 `render.yaml` defines a static site (build `npm ci && npm run build`, publish `dist`, SPA rewrite to `index.html`).
-
-## Sound and share image
-
-- **Sound** is off by default (toggle in the nav and footer). It is synthesised with the Web Audio API, so there are no audio files: an ambient bed of drones and wind, a soft bell now and then, and chimes, forge strikes and a reveal arpeggio for interactions.
-- **OG image:** `npm run og` regenerates `public/og.png` from the same scene components the site uses, so the link preview always matches the hero.

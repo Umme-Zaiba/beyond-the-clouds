@@ -4,7 +4,7 @@ import { Bookmark, BookmarkCheck, Eye, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArtifactStage } from '../../components/cards/ArtifactStage';
 import { Landscape } from '../../components/motion/Landscape';
-import { SealButton } from '../../components/motion/JadeSeal';
+import { SealButton } from '../../components/motion/Seal';
 import { ARCHIVE_BY_ID } from '../../data/archive';
 import { REALMS } from '../../data/realms';
 import { AFFINITIES } from '../../data/forge';

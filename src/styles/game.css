@@ -1,0 +1,493 @@
+/* The game layer: trials, the mini-games, results and the daily card. Loaded last. */
+
+:root {
+  --arabic: 'Amiri', 'Noto Naskh Arabic', serif;
+}
+
+/* ── stars ── */
+.stars-row {
+  display: inline-flex;
+  gap: 4px;
+  vertical-align: middle;
+}
+.star-icon path {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1.4;
+}
+.star-icon circle {
+  fill: var(--line-strong);
+}
+.star-icon.is-on {
+  filter: drop-shadow(0 0 6px rgba(255, 227, 163, 0.8));
+}
+.star-icon.is-on path {
+  fill: rgba(255, 227, 163, 0.92);
+  stroke: #ffe3a3;
+}
+.star-icon.is-on circle {
+  fill: #fff;
+}
+
+/* ── map: states for realms ── */
+.map__peak {
+  font-family: var(--han);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+.map__pin:not(.is-locked) .map__cloud--l {
+  transform: translateX(-54px);
+  opacity: 0.1;
+}
+.map__pin:not(.is-locked) .map__cloud--r {
+  transform: translateX(54px);
+  opacity: 0.1;
+}
+.map__pin.is-locked .map__peak {
+  filter: grayscale(0.8) brightness(0.6);
+}
+.map__pin.is-locked:hover .map__cloud--l,
+.map__pin.is-locked:hover .map__cloud--r,
+.map__pin.is-locked:focus-visible .map__cloud--l,
+.map__pin.is-locked:focus-visible .map__cloud--r {
+  transform: none;
+  opacity: 0.9;
+}
+
+/* ── levels list ── */
+.levels {
+  list-style: none;
+  margin: 24px 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.level {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  text-decoration: none;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+a.level:hover {
+  transform: translateX(4px);
+  border-color: rgba(142, 233, 255, 0.6);
+  box-shadow: 0 0 32px -10px rgba(142, 233, 255, 0.5);
+}
+.level.is-locked {
+  opacity: 0.5;
+}
+.level__num {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #82e6ff, #8f88ff);
+  color: #071022;
+  font-family: var(--display);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.level.is-locked .level__num {
+  background: rgba(160, 190, 255, 0.2);
+  color: var(--muted);
+}
+.level__info strong {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.level__info small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+/* ── play page ── */
+.page > .play {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+}
+.play {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  align-items: start;
+}
+.play__scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.85;
+}
+.play__scene .landscape {
+  position: absolute;
+}
+.play__mist {
+  z-index: 1;
+}
+.play__panel {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 32px, 760px);
+  margin: 100px auto 70px;
+  padding: clamp(22px, 4vw, 40px);
+  border-radius: 28px;
+  border: 1px solid var(--line-strong);
+  background: var(--glass-deep);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 80px -30px rgba(120, 110, 255, 0.6), var(--shadow);
+}
+.play__back {
+  margin-bottom: 8px;
+}
+
+.game {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+.game__message {
+  text-align: center;
+  color: var(--muted);
+  max-width: 52ch;
+  margin: 0;
+  min-height: 3.2em;
+}
+.game__message strong {
+  color: var(--fg);
+}
+.game__bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.game__lives {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.pips {
+  display: flex;
+  gap: 6px;
+}
+.pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(160, 190, 255, 0.25);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.pip.is-done {
+  background: #ffe3a3;
+  box-shadow: 0 0 8px #ffe3a3;
+}
+.pip.is-now {
+  background: #8ee9ff;
+  box-shadow: 0 0 10px #8ee9ff;
+}
+
+/* memory */
+.memory__sky {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 250px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 25% 30%, rgba(140, 110, 255, 0.35), transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(80, 220, 255, 0.2), transparent 50%),
+    linear-gradient(160deg, #080d2e, #121a50);
+  overflow: hidden;
+}
+.memory__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.memory__lines line {
+  stroke: rgba(160, 200, 255, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
+}
+.memory__star {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.memory__star:disabled {
+  cursor: default;
+}
+.memory__star svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.memory__star path {
+  fill: rgba(190, 210, 255, 0.12);
+  stroke: rgba(190, 210, 255, 0.7);
+  stroke-width: 1.2;
+}
+.memory__star circle {
+  fill: rgba(220, 230, 255, 0.8);
+}
+.memory__star.is-lit {
+  transform: translate(-50%, -50%) scale(1.3);
+  filter: drop-shadow(0 0 14px #ffe3a3);
+}
+.memory__star.is-lit path {
+  fill: rgba(255, 227, 163, 0.95);
+  stroke: #fff3d0;
+}
+.memory__star.is-wrong {
+  animation: wobble 0.38s ease;
+}
+.memory__star.is-wrong path {
+  stroke: #ff9fb0;
+  fill: rgba(255, 140, 170, 0.35);
+}
+.memory__star:not(:disabled):hover {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+@keyframes wobble {
+  25% {
+    transform: translate(-50%, -50%) rotate(-12deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(12deg);
+  }
+}
+
+/* steady hand */
+.steady__ring {
+  width: min(70vw, 260px);
+  height: min(70vw, 260px);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.steady__ring:disabled {
+  cursor: default;
+}
+.steady__track {
+  fill: none;
+  stroke: rgba(160, 190, 255, 0.28);
+  stroke-width: 10;
+}
+.steady__arc {
+  fill: none;
+  stroke: #8ee9ff;
+  stroke-width: 12;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px #8ee9ff);
+}
+.steady__marker {
+  fill: #ffe3a3;
+  filter: drop-shadow(0 0 10px #ffd27a);
+}
+.steady__center {
+  font-family: var(--display);
+  font-size: 30px;
+  fill: var(--gold-text);
+}
+
+/* the scale */
+.scale__svg {
+  width: min(100%, 540px);
+  height: auto;
+  overflow: visible;
+}
+.scale__beam,
+.scale__pan {
+  transition: transform 0.55s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+.scale__goods {
+  fill: #8fb4e0;
+  stroke: #dbe8f5;
+  stroke-width: 2;
+}
+.scale__num {
+  fill: #071022;
+  font: 700 14px var(--sans);
+}
+.scale__sum {
+  fill: #fff;
+  font: 700 22px var(--sans);
+}
+.scale__level {
+  fill: none;
+  stroke: #8ee9ff;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 8px #8ee9ff);
+}
+.scale__weights {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.weight {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 0;
+  background: linear-gradient(145deg, #fff0c4, #dcae4f 55%, #8a6a2c);
+  color: #2a1d06;
+  font: 700 1.15rem var(--sans);
+  cursor: pointer;
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.7), inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+}
+.weight:hover:not(:disabled) {
+  transform: translateY(-3px);
+}
+.weight.is-on {
+  background: linear-gradient(145deg, #dff8ff, #82e6ff 55%, #5a6fd8);
+  box-shadow: 0 0 24px rgba(142, 233, 255, 0.7), inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  transform: translateY(-5px);
+}
+.weight:disabled {
+  cursor: default;
+  filter: saturate(0.7);
+}
+
+/* results and the daily card */
+.result {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.result h2 {
+  margin: 10px 0 4px;
+}
+.result__virtue {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--gold-text);
+  margin: 0 0 10px;
+}
+.result__gain {
+  margin: 0 0 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(142, 233, 255, 0.12);
+  border: 1px solid rgba(142, 233, 255, 0.4);
+}
+.result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+}
+.daily__card {
+  max-width: 760px;
+  padding: clamp(22px, 4vw, 36px);
+  border-radius: 28px;
+  border: 1px solid var(--line-strong);
+  background: var(--glass-deep);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 80px -34px rgba(120, 110, 255, 0.7);
+}
+.daily__share {
+  margin: 12px 0 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--line);
+  font: 500 0.9rem/1.6 ui-monospace, 'SF Mono', Menlo, monospace;
+  white-space: pre-wrap;
+  text-align: left;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+
+.hero__buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* the lore quiz */
+.quiz {
+  justify-items: stretch;
+  width: 100%;
+}
+.quiz__count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.quiz__q {
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  margin: 0;
+}
+.quiz__options {
+  display: grid;
+  gap: 10px;
+}
+.quiz__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  background: var(--glass);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.quiz__option:hover:not(:disabled) {
+  transform: translateX(4px);
+  border-color: var(--focus);
+  background: var(--glass-hover);
+}
+.quiz__option:disabled {
+  cursor: default;
+}
+.quiz__option.is-right {
+  border-color: #5fd6a4;
+  background: rgba(95, 214, 164, 0.18);
+  box-shadow: 0 0 24px -8px #5fd6a4;
+}
+.quiz__option.is-wrong {
+  border-color: #ff8fa6;
+  background: rgba(255, 143, 166, 0.16);
+}
+.quiz__option.is-dim {
+  opacity: 0.5;
+}

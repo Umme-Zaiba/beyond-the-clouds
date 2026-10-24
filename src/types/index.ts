@@ -37,6 +37,33 @@ export interface SceneFeatures {
   islands?: boolean;
 }
 
+export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
+export type GameKind = 'memory' | 'steady' | 'scale' | 'quiz';
+
+export interface QuizQuestion {
+  q: string;
+  options: string[];
+  /** index of the correct option */
+  answer: number;
+  /** one line shown after answering */
+  why: string;
+}
+
+export interface LevelDef {
+  id: string;
+  title: string;
+  kind: GameKind;
+  /** one line shown before the level starts */
+  brief: string;
+  length?: number;
+  hits?: number;
+  arc?: number;
+  speed?: number;
+  weights?: number;
+  seed?: number;
+  quiz?: QuizQuestion[];
+}
+
 export interface Realm {
   id: RealmId;
   name: string;
@@ -44,11 +71,17 @@ export interface Realm {
   tagline: string;
   mood: 'light' | 'dark';
   lore: string[];
+  /** the night palette; other times of day are derived from it */
   palette: Palette;
+  /** the realm's own colour, mixed into the scene at every time of day */
+  accent: string;
   features: SceneFeatures;
   seed: number;
   /** position on the world map, 0-100 */
   map: { x: number; y: number };
+  levels: LevelDef[];
+  /** stars needed in the previous realm to enter */
+  entryStars: number;
   materials: MaterialId[];
   characters: string[];
   artifacts: string[];
@@ -63,8 +96,8 @@ export interface Material {
   profile: Stats;
   blurb: string;
   starter: boolean;
-  /** how the gathering trial is described */
-  site: string;
+  /** stars earned in this realm needed to receive it */
+  unlockStars: number;
 }
 
 export interface WeaponForm {
@@ -155,10 +188,12 @@ export interface Artifact {
 export type ArchiveEntry = Character | Artifact;
 
 export interface Progress {
-  realms: string[];
+  /** best stars per level id, 0-3 */
+  levels: Record<string, number>;
+  /** best stars per daily date (YYYY-MM-DD) */
+  daily: Record<string, number>;
   entries: string[];
   bookmarks: string[];
-  materials: MaterialId[];
   forged: ForgedRecord[];
   trail: boolean;
   sound: boolean;

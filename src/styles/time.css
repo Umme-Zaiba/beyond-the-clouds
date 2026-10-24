@@ -1,0 +1,219 @@
+/* Time of day. The site follows the visitor's local clock (or a pinned sky): bright and airy in the
+   morning and afternoon, a rose-and-plum dusk in the evening, and the deep indigo night. Everything
+   else in the stylesheets reads these tokens, so a theme is just a block of values. */
+
+:root,
+[data-time='night'] {
+  --glass: rgba(18, 26, 70, 0.5);
+  --glass-hover: rgba(26, 36, 92, 0.7);
+  --glass-on: rgba(30, 44, 110, 0.65);
+  --glass-strong: rgba(14, 20, 60, 0.7);
+  --glass-deep: rgba(8, 12, 40, 0.62);
+  --chip: rgba(160, 190, 255, 0.07);
+  --nav-from: rgba(7, 10, 28, 0.82);
+  --nav-to: rgba(7, 10, 28, 0);
+  --card-fade: rgba(6, 9, 30, 0.94);
+  --card-fade-0: rgba(6, 9, 30, 0);
+  --veil: radial-gradient(circle at 50% 50%, rgba(30, 24, 90, 0.97), rgba(5, 7, 22, 0.99));
+  --scene-fg: #ffffff;
+  --title-shadow: rgba(20, 20, 80, 0.7);
+  --eyebrow: #bfe9ff;
+  --eyebrow-glow: 0 0 18px rgba(142, 233, 255, 0.45);
+  --h-shadow: 0 0 40px rgba(140, 160, 255, 0.25);
+  --map-bg:
+    radial-gradient(circle at 18% 28%, rgba(140, 110, 255, 0.4), transparent 42%), radial-gradient(circle at 82% 72%, rgba(80, 220, 255, 0.24), transparent 46%),
+    linear-gradient(160deg, #0b1130, #151b52);
+  --map-stars: 0.8;
+}
+
+[data-time='morning'] {
+  --bg: #eef6f4;
+  --bg-2: #ddeeed;
+  --fg: #1c2a33;
+  --muted: #4b6070;
+  --gold-text: #8a6410;
+  --card: rgba(255, 255, 255, 0.6);
+  --card-solid: #ffffff;
+  --line: rgba(30, 70, 90, 0.14);
+  --line-strong: rgba(30, 70, 90, 0.3);
+  --focus: #17798a;
+  --trail-a: #d89a3a;
+  --trail-b: #3fb0c4;
+  --seal-bg: linear-gradient(135deg, #6fd0ea, #98a2f4 60%, #c9a2f0);
+  --seal-fg: #0a1a2a;
+  --seal-glyph-bg: #0a1a2a;
+  --seal-glyph-fg: #bdeeff;
+  --shadow: 0 18px 40px -22px rgba(30, 70, 90, 0.45);
+  --glass: rgba(255, 255, 255, 0.62);
+  --glass-hover: rgba(255, 255, 255, 0.88);
+  --glass-on: rgba(255, 255, 255, 0.96);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --glass-deep: rgba(255, 255, 255, 0.8);
+  --chip: rgba(30, 70, 90, 0.06);
+  --nav-from: rgba(238, 246, 244, 0.9);
+  --nav-to: rgba(238, 246, 244, 0);
+  --card-fade: rgba(238, 246, 244, 0.95);
+  --card-fade-0: rgba(238, 246, 244, 0);
+  --veil: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.97), rgba(214, 234, 236, 0.98));
+  --scene-fg: #1c2a33;
+  --title-shadow: rgba(255, 255, 255, 0.85);
+  --eyebrow: #2d6a78;
+  --eyebrow-glow: none;
+  --h-shadow: none;
+  --map-bg: radial-gradient(circle at 20% 30%, #ffffff, transparent 45%), radial-gradient(circle at 80% 72%, #bfe6ea, transparent 50%), linear-gradient(160deg, #e6f2f0, #cfe6e8);
+  --map-stars: 0;
+  color-scheme: light;
+}
+
+[data-time='afternoon'] {
+  --bg: #fbf6ea;
+  --bg-2: #f5ecd6;
+  --fg: #232b30;
+  --muted: #566068;
+  --gold-text: #86600c;
+  --card: rgba(255, 255, 255, 0.62);
+  --card-solid: #fffdf8;
+  --line: rgba(60, 60, 40, 0.14);
+  --line-strong: rgba(60, 60, 40, 0.3);
+  --focus: #1c6f9a;
+  --trail-a: #d4902a;
+  --trail-b: #2f9fcf;
+  --seal-bg: linear-gradient(135deg, #67c4ee, #8f9cf2 60%, #f0b0a8);
+  --seal-fg: #0a1a2a;
+  --seal-glyph-bg: #0a1a2a;
+  --seal-glyph-fg: #bdeeff;
+  --shadow: 0 18px 40px -22px rgba(80, 70, 30, 0.4);
+  --glass: rgba(255, 255, 255, 0.66);
+  --glass-hover: rgba(255, 255, 255, 0.9);
+  --glass-on: rgba(255, 255, 255, 0.97);
+  --glass-strong: rgba(255, 255, 255, 0.85);
+  --glass-deep: rgba(255, 253, 246, 0.84);
+  --chip: rgba(60, 60, 40, 0.06);
+  --nav-from: rgba(251, 246, 234, 0.9);
+  --nav-to: rgba(251, 246, 234, 0);
+  --card-fade: rgba(251, 246, 234, 0.95);
+  --card-fade-0: rgba(251, 246, 234, 0);
+  --veil: radial-gradient(circle at 50% 50%, rgba(255, 253, 246, 0.97), rgba(246, 236, 212, 0.98));
+  --scene-fg: #232b30;
+  --title-shadow: rgba(255, 255, 255, 0.85);
+  --eyebrow: #28668a;
+  --eyebrow-glow: none;
+  --h-shadow: none;
+  --map-bg: radial-gradient(circle at 20% 30%, #ffffff, transparent 45%), radial-gradient(circle at 80% 72%, #ffe9b0, transparent 50%), linear-gradient(160deg, #f8efd8, #e6eef2);
+  --map-stars: 0;
+  color-scheme: light;
+}
+
+[data-time='evening'] {
+  --bg: #1d1535;
+  --bg-2: #2a1d48;
+  --fg: #fff1f6;
+  --muted: #d9c3dc;
+  --gold-text: #ffd9a0;
+  --card: rgba(255, 220, 240, 0.08);
+  --card-solid: rgba(44, 28, 74, 0.94);
+  --line: rgba(255, 200, 225, 0.2);
+  --line-strong: rgba(255, 200, 225, 0.42);
+  --focus: #ffb3d1;
+  --trail-a: #ffd9a0;
+  --trail-b: #ff9ec0;
+  --seal-bg: linear-gradient(135deg, #ffb3d1, #c89bf0 60%, #8f88ff);
+  --seal-fg: #26103a;
+  --seal-glyph-bg: #26103a;
+  --seal-glyph-fg: #ffd9ea;
+  --shadow: 0 18px 44px -20px rgba(10, 0, 30, 0.8);
+  --glass: rgba(60, 34, 92, 0.5);
+  --glass-hover: rgba(80, 44, 118, 0.68);
+  --glass-on: rgba(96, 52, 134, 0.7);
+  --glass-strong: rgba(44, 24, 72, 0.72);
+  --glass-deep: rgba(30, 16, 54, 0.64);
+  --chip: rgba(255, 200, 230, 0.08);
+  --nav-from: rgba(29, 21, 53, 0.82);
+  --nav-to: rgba(29, 21, 53, 0);
+  --card-fade: rgba(26, 14, 48, 0.94);
+  --card-fade-0: rgba(26, 14, 48, 0);
+  --veil: radial-gradient(circle at 50% 50%, rgba(86, 40, 100, 0.97), rgba(24, 12, 40, 0.99));
+  --scene-fg: #fff7fa;
+  --title-shadow: rgba(40, 10, 60, 0.7);
+  --eyebrow: #ffd2e4;
+  --eyebrow-glow: 0 0 18px rgba(255, 158, 192, 0.45);
+  --h-shadow: 0 0 40px rgba(255, 150, 200, 0.22);
+  --map-bg: radial-gradient(circle at 18% 28%, rgba(255, 150, 200, 0.4), transparent 44%), radial-gradient(circle at 82% 72%, rgba(255, 190, 120, 0.26), transparent 48%), linear-gradient(160deg, #2a1a4a, #4a2a62);
+  --map-stars: 0.5;
+}
+
+body {
+  background:
+    radial-gradient(1100px 620px at 85% -8%, var(--wash-a, rgba(130, 105, 255, 0.22)), transparent 70%),
+    radial-gradient(900px 520px at -5% 28%, var(--wash-b, rgba(70, 215, 255, 0.12)), transparent 70%),
+    radial-gradient(900px 600px at 50% 120%, var(--wash-c, rgba(255, 150, 200, 0.09)), transparent 70%), var(--bg);
+  background-attachment: fixed;
+}
+[data-time='morning'] {
+  --wash-a: rgba(143, 199, 228, 0.35);
+  --wash-b: rgba(190, 235, 220, 0.4);
+  --wash-c: rgba(255, 220, 200, 0.4);
+}
+[data-time='afternoon'] {
+  --wash-a: rgba(120, 190, 240, 0.3);
+  --wash-b: rgba(255, 230, 160, 0.35);
+  --wash-c: rgba(255, 210, 190, 0.3);
+}
+[data-time='evening'] {
+  --wash-a: rgba(255, 140, 190, 0.22);
+  --wash-b: rgba(160, 120, 255, 0.18);
+  --wash-c: rgba(255, 180, 120, 0.15);
+}
+
+/* the map and a few surfaces that were drawn for night */
+.map {
+  background: var(--map-bg);
+}
+.map::before {
+  opacity: var(--map-stars);
+}
+.nav__sky {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--chip);
+  color: var(--fg);
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: box-shadow 0.25s, background 0.25s;
+}
+.nav__sky:hover {
+  box-shadow: 0 0 18px color-mix(in srgb, var(--trail-b) 55%, transparent);
+}
+.nav__sky-label {
+  letter-spacing: 0.04em;
+}
+.nav__sound {
+  color: var(--fg);
+  border-color: var(--line-strong);
+  background: var(--chip);
+}
+.footer {
+  border-top-color: var(--line);
+}
+body,
+.nav,
+.footer,
+.step,
+.realm-card,
+.entry-card {
+  transition: background-color 0.8s ease, color 0.8s ease, border-color 0.8s ease;
+}
+
+@media (max-width: 760px) {
+  .nav__sky-label {
+    display: none;
+  }
+  .nav__sky {
+    padding: 0 10px;
+  }
+}

@@ -1,17 +1,21 @@
 import { useEffect } from 'react';
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { Menu, Sparkles, Volume2, VolumeX, X } from 'lucide-react';
+import { Menu, Moon, Sparkles, Sun, Sunrise, Sunset, Volume2, VolumeX, X } from 'lucide-react';
 import { setSoundEnabled } from '../../lib/audio';
 import { useState } from 'react';
 import { QiCursor } from '../motion/QiCursor';
 import { useProgress } from '../../state/ProgressContext';
+import { useTime } from '../../state/TimeContext';
+import { TIME_LABEL } from '../../lib/time';
+import { totalStars, MAX_STARS } from '../../lib/game';
 import { useReducedMotion } from '../../lib/hooks';
 import { TOTAL_WEAPONS } from '../../lib/forge';
 import { REALMS } from '../../data/realms';
 
 const NAV = [
-  { to: '/realms', label: 'Realms', glyph: '界' },
+  { to: '/realms', label: 'Trials', glyph: '界' },
+  { to: '/daily', label: 'Daily', glyph: '日' },
   { to: '/forge', label: 'Forge', glyph: '锻' },
   { to: '/archive', label: 'Archive', glyph: '宝' },
   { to: '/collection', label: 'Collection', glyph: '云' },
@@ -28,6 +32,8 @@ export function Layout() {
   const { progress, setTrail, setSound } = useProgress();
   const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
+  const { time, mode, cycle } = useTime();
+  const SkyIcon = { morning: Sunrise, afternoon: Sun, evening: Sunset, night: Moon }[time];
 
   useEffect(() => {
     document.documentElement.dataset.theme = themeFor(pathname);
@@ -38,6 +44,7 @@ export function Layout() {
   useEffect(() => setSoundEnabled(progress.sound), [progress.sound]);
 
   const forged = progress.forged.length;
+  const stars = totalStars(progress);
 
   return (
     <>
@@ -59,12 +66,21 @@ export function Layout() {
                 {n.glyph}
               </span>
               {n.label}
-              {n.to === '/collection' && forged > 0 && <span className="nav__count">{forged}</span>}
+              {n.to === '/collection' && stars > 0 && <span className="nav__count">{stars}</span>}
             </NavLink>
           ))}
         </nav>
 
         <div className="nav__tools">
+          <button
+            className="nav__sky"
+            onClick={cycle}
+            aria-label={`Sky: ${mode === 'auto' ? `automatic, now ${TIME_LABEL[time].toLowerCase()}` : TIME_LABEL[time].toLowerCase()}. Press to change.`}
+            title={mode === 'auto' ? `Automatic (${TIME_LABEL[time]})` : TIME_LABEL[time]}
+          >
+            <SkyIcon size={17} />
+            <span className="nav__sky-label">{mode === 'auto' ? 'Auto' : TIME_LABEL[time]}</span>
+          </button>
           <button
             className="nav__sound"
             aria-pressed={progress.sound}
@@ -115,7 +131,7 @@ export function Layout() {
               </button>
             </div>
             <p className="footer__stat">
-              {forged} of {TOTAL_WEAPONS} weapons forged
+              {stars} of {MAX_STARS} stars · {forged} of {TOTAL_WEAPONS} weapons forged
             </p>
           </div>
         </div>

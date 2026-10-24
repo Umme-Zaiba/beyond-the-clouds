@@ -1,100 +1,37 @@
-import { motion } from 'motion/react';
-import { ArrowDown } from 'lucide-react';
-import { Landscape } from '../../components/motion/Landscape';
-import { Mist } from '../../components/motion/Mist';
-import { Petals } from '../../components/motion/Petals';
+import { SealLink } from '../../components/motion/Seal';
 import { ArtifactStage } from '../../components/cards/ArtifactStage';
-import { SealLink } from '../../components/motion/JadeSeal';
 import { RealmCard, EntryCard } from '../../components/cards/Cards';
-import { REALM_LIST } from '../../data/realms';
-import { ARCHIVE, CHARACTERS } from '../../data/archive';
+import { CHARACTERS } from '../../data/archive';
+import { REALM_LIST, MAX_STARS } from '../../data/realms';
 import { TOTAL_WEAPONS } from '../../lib/forge';
-import { useFinePointer, useParallax, useReducedMotion } from '../../lib/hooks';
+import { dailyStreak, rankFor, todayKey, totalStars } from '../../lib/game';
 import { useProgress } from '../../state/ProgressContext';
-import type { Palette } from '../../types';
-
-const HERO_PALETTE: Palette = {
-  skyTop: '#070a28',
-  skyMid: '#3a3190',
-  skyBottom: '#f0a8c8',
-  far: '#5560b8',
-  mid: '#3a4194',
-  near: '#1c2160',
-  glow: '#ffe9b8',
-  glow2: '#9fe6ff',
-  mist: '#ffe4ef',
-};
-
-const TITLE = ['Beyond', 'the', 'Clouds'];
+import { Ascent } from './Ascent';
 
 export function Home() {
-  const reduced = useReducedMotion();
-  const fine = useFinePointer();
-  const heroRef = useParallax<HTMLElement>(!reduced);
   const { progress } = useProgress();
+  const stars = totalStars(progress);
+  const rank = rankFor(stars);
+  const streak = dailyStreak(progress.daily, todayKey());
 
   const steps = [
-    { glyph: '界', title: 'Explore', text: 'Wander three realms and read what they remember.', done: progress.realms.length, of: REALM_LIST.length },
-    { glyph: '宝', title: 'Discover', text: 'Open characters and artifacts, and follow their secrets.', done: progress.entries.length, of: ARCHIVE.length },
-    { glyph: '锻', title: 'Create', text: 'Combine materials, form and element into a weapon.', done: progress.forged.length, of: TOTAL_WEAPONS },
-    { glyph: '云', title: 'Collect', text: 'Keep every discovery and share your best forging.', done: progress.bookmarks.length, of: null },
+    { glyph: '游', title: 'Ascend', text: 'Scroll through the clouds and read the road. Every detail is fair game later.', stat: 'Seven scenes' },
+    { glyph: '试', title: 'Trial', text: 'Memory, steady breath, spirit-stone scales and lore questions. Up to three stars each.', stat: `${stars} of ${MAX_STARS} stars` },
+    { glyph: '锻', title: 'Forge', text: 'Spend what you earn on materials, then forge a sword, spear or fan.', stat: `${progress.forged.length} of ${TOTAL_WEAPONS} weapons` },
+    { glyph: '日', title: 'Return', text: 'A new daily challenge each morning, with a result you can share.', stat: streak > 0 ? `${streak}-day streak` : 'Start a streak' },
   ];
 
   return (
     <>
-      <section className="hero" ref={heroRef}>
-        <Landscape palette={HERO_PALETTE} seed={5} features={{ stars: true, islands: true }} className="hero__scene" />
-        <Mist color="255,214,236" className="hero__mist" />
-        <Petals className="hero__petals" count={30} />
-        <div className="hero__artifact" aria-hidden="true">
-          <ArtifactStage shape="sword" affinity="wind" className="hero__stage" />
-        </div>
-        <div className="hero__content">
-          <motion.p
-            className="eyebrow"
-            initial={reduced ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          >
-            An interactive world of immortals, hidden destinies and divine artifacts
-          </motion.p>
-          <h1 className="hero__title" aria-label="Beyond the Clouds">
-            {TITLE.map((word, i) => (
-              <motion.span
-                key={word}
-                className="hero__word"
-                aria-hidden="true"
-                initial={reduced ? false : { opacity: 0, y: 40, filter: 'blur(12px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ delay: 0.7 + i * 0.22, duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h1>
-          <motion.div
-            className="hero__actions"
-            initial={reduced ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6, duration: 0.8 }}
-          >
-            <SealLink to="/realms" glyph="云">
-              Enter the Celestial Realm
-            </SealLink>
-            <p className="hero__hint">{fine ? 'Move your cursor. It is a sword.' : 'Drag a finger across the screen. Your qi leaves a trail.'}</p>
-          </motion.div>
-        </div>
-        <a className="hero__scroll" href="#realms" aria-label="Scroll to the realms">
-          <ArrowDown size={18} />
-        </a>
-      </section>
+      <Ascent />
 
       <section id="realms" className="section">
         <header className="section__head">
-          <p className="eyebrow">01 · Explore</p>
+          <p className="eyebrow">The trials</p>
           <h2>Three realms, one forge</h2>
           <p className="lede">
-            Each realm holds lore, people to meet, and a spirit material you can only earn by passing its trial. Bring them to the Forge.
+            You are a <strong>{rank.title}</strong>
+            {stars > 0 ? ` with ${stars} stars` : ''}. Pass the trials to open each realm and to win the materials you will need at the forge.
           </p>
         </header>
         <div className="grid grid--3">
@@ -107,14 +44,14 @@ export function Home() {
       <section className="section section--forge" aria-labelledby="forge-h">
         <div className="forge-teaser">
           <div className="forge-teaser__copy">
-            <p className="eyebrow">02 · Create</p>
+            <p className="eyebrow">Create</p>
             <h2 id="forge-h">The Divine Forge</h2>
             <p className="lede">
-              Choose a form, two materials and an element. The result is never random: the same choices always forge the same weapon, so
-              every one of the {TOTAL_WEAPONS} is something you can plan for, chase and share.
+              Choose a form, two materials and an element. The result is never random: the same choices always forge the same weapon, so every one of the {TOTAL_WEAPONS} is
+              something you can plan for, chase and share.
             </p>
             <SealLink to="/forge" glyph="锻">
-              Forge a weapon
+              Visit the forge
             </SealLink>
           </div>
           <div className="forge-teaser__art" aria-hidden="true">
@@ -127,7 +64,7 @@ export function Home() {
 
       <section className="section">
         <header className="section__head">
-          <p className="eyebrow">03 · Discover</p>
+          <p className="eyebrow">Discover</p>
           <h2>The Immortal Archive</h2>
           <p className="lede">Original characters and artifacts, each tied to a realm, each with a secret you can unveil.</p>
         </header>
@@ -145,9 +82,9 @@ export function Home() {
 
       <section className="section section--tight">
         <header className="section__head">
-          <p className="eyebrow">04 · Collect</p>
-          <h2>Everything you find, kept</h2>
-          <p className="lede">No account needed. Progress is saved in this browser.</p>
+          <p className="eyebrow">How it plays</p>
+          <h2>Read, trial, forge, return</h2>
+          <p className="lede">No account needed. Progress is saved in this browser, and the sky follows your local time.</p>
         </header>
         <ol className="steps">
           {steps.map((s) => (
@@ -157,7 +94,7 @@ export function Home() {
               </span>
               <h3>{s.title}</h3>
               <p>{s.text}</p>
-              <p className="step__progress">{s.of ? `${s.done} / ${s.of}` : `${s.done} bookmarked`}</p>
+              <p className="step__progress">{s.stat}</p>
             </li>
           ))}
         </ol>

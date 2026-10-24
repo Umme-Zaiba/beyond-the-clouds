@@ -1,13 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import { initialProgress, loadProgress, saveProgress } from '../lib/storage';
-import { recipeId, normalizeRecipe } from '../lib/forge';
-import type { MaterialId, Progress, Recipe } from '../types';
+import { normalizeRecipe, recipeId } from '../lib/forge';
+import type { Progress, Recipe } from '../types';
 
 type Action =
-  | { type: 'realm'; id: string }
+  | { type: 'level'; id: string; stars: number }
+  | { type: 'daily'; date: string; stars: number }
   | { type: 'entry'; id: string }
   | { type: 'bookmark'; id: string }
-  | { type: 'material'; id: MaterialId }
   | { type: 'forge'; recipe: Recipe }
   | { type: 'trail'; on: boolean }
   | { type: 'sound'; on: boolean }
@@ -17,19 +17,18 @@ const addOnce = (list: string[], id: string) => (list.includes(id) ? list : [...
 
 function reducer(state: Progress, action: Action): Progress {
   switch (action.type) {
-    case 'realm':
-      return state.realms.includes(action.id) ? state : { ...state, realms: addOnce(state.realms, action.id) };
+    case 'level':
+      // only ever improve a best result
+      return (state.levels[action.id] ?? 0) >= action.stars ? state : { ...state, levels: { ...state.levels, [action.id]: action.stars } };
+    case 'daily':
+      return (state.daily[action.date] ?? 0) >= action.stars ? state : { ...state, daily: { ...state.daily, [action.date]: action.stars } };
     case 'entry':
       return state.entries.includes(action.id) ? state : { ...state, entries: addOnce(state.entries, action.id) };
     case 'bookmark':
       return {
         ...state,
-        bookmarks: state.bookmarks.includes(action.id)
-          ? state.bookmarks.filter((b) => b !== action.id)
-          : [...state.bookmarks, action.id],
+        bookmarks: state.bookmarks.includes(action.id) ? state.bookmarks.filter((b) => b !== action.id) : [...state.bookmarks, action.id],
       };
-    case 'material':
-      return state.materials.includes(action.id) ? state : { ...state, materials: [...state.materials, action.id] };
     case 'forge': {
       const recipe = normalizeRecipe(action.recipe);
       const id = recipeId(recipe);
@@ -47,10 +46,10 @@ function reducer(state: Progress, action: Action): Progress {
 
 interface ProgressApi {
   progress: Progress;
-  discoverRealm: (id: string) => void;
+  recordLevel: (id: string, stars: number) => void;
+  recordDaily: (date: string, stars: number) => void;
   discoverEntry: (id: string) => void;
   toggleBookmark: (id: string) => void;
-  gatherMaterial: (id: MaterialId) => void;
   saveWeapon: (recipe: Recipe) => boolean;
   setTrail: (on: boolean) => void;
   setSound: (on: boolean) => void;
@@ -65,10 +64,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   useEffect(() => saveProgress(progress), [progress]);
 
   // dispatch is stable, so these callbacks are too and are safe to use as effect dependencies
-  const discoverRealm = useCallback((id: string) => dispatch({ type: 'realm', id }), []);
+  const recordLevel = useCallback((id: string, stars: number) => dispatch({ type: 'level', id, stars }), []);
+  const recordDaily = useCallback((date: string, stars: number) => dispatch({ type: 'daily', date, stars }), []);
   const discoverEntry = useCallback((id: string) => dispatch({ type: 'entry', id }), []);
   const toggleBookmark = useCallback((id: string) => dispatch({ type: 'bookmark', id }), []);
-  const gatherMaterial = useCallback((id: MaterialId) => dispatch({ type: 'material', id }), []);
   const setTrail = useCallback((on: boolean) => dispatch({ type: 'trail', on }), []);
   const setSound = useCallback((on: boolean) => dispatch({ type: 'sound', on }), []);
   const reset = useCallback(() => dispatch({ type: 'reset' }), []);
@@ -76,10 +75,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const api = useMemo<ProgressApi>(
     () => ({
       progress,
-      discoverRealm,
+      recordLevel,
+      recordDaily,
       discoverEntry,
       toggleBookmark,
-      gatherMaterial,
       saveWeapon: (recipe) => {
         const isNew = !progress.forged.some((f) => f.id === recipeId(recipe));
         dispatch({ type: 'forge', recipe });
@@ -89,7 +88,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       setSound,
       reset,
     }),
-    [progress, discoverRealm, discoverEntry, toggleBookmark, gatherMaterial, setTrail, setSound, reset],
+    [progress, recordLevel, recordDaily, discoverEntry, toggleBookmark, setTrail, setSound, reset],
   );
 
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;

@@ -15,24 +15,24 @@ body {
 
 /* ── shared glass + glow ── */
 .eyebrow {
-  color: #bfe9ff;
-  text-shadow: 0 0 18px rgba(142, 233, 255, 0.45);
+  color: var(--eyebrow);
+  text-shadow: var(--eyebrow-glow);
 }
 .skip-link {
   background: #8ee9ff;
   color: #071022;
 }
 .tag {
-  background: rgba(160, 190, 255, 0.07);
+  background: var(--chip);
   border-color: rgba(160, 200, 255, 0.3);
   color: #cdd6ff;
 }
 .tag--original {
   border-color: rgba(240, 207, 140, 0.7);
-  color: #f0cf8c;
+  color: var(--gold-text);
 }
 .chip {
-  background: rgba(160, 190, 255, 0.06);
+  background: var(--chip);
   backdrop-filter: blur(8px);
 }
 .chip:hover {
@@ -46,12 +46,12 @@ body {
 }
 h1,
 h2 {
-  text-shadow: 0 0 40px rgba(140, 160, 255, 0.25);
+  text-shadow: var(--h-shadow);
 }
 
 /* ── nav ── */
 .nav {
-  background: linear-gradient(to bottom, rgba(7, 10, 28, 0.82), rgba(7, 10, 28, 0));
+  background: linear-gradient(to bottom, var(--nav-from), var(--nav-to));
 }
 .nav__mark {
   background: linear-gradient(135deg, #82e6ff, #8f88ff);
@@ -77,7 +77,7 @@ h2 {
   height: 38px;
   border-radius: 50%;
   border: 1px solid var(--line-strong);
-  background: rgba(160, 190, 255, 0.07);
+  background: var(--chip);
   cursor: pointer;
   transition: box-shadow 0.25s, background 0.25s;
 }
@@ -101,7 +101,7 @@ h2 {
   box-shadow: 0 0 0 4px rgba(142, 233, 255, 0.2), 0 0 44px rgba(142, 233, 255, 0.55), var(--shadow);
 }
 .seal--ghost {
-  background: rgba(160, 190, 255, 0.06);
+  background: var(--chip);
   backdrop-filter: blur(8px);
   box-shadow: none;
 }
@@ -294,19 +294,19 @@ h2 {
 .related a,
 .gather,
 .filters .search {
-  background: rgba(18, 26, 70, 0.45);
+  background: var(--glass);
   backdrop-filter: blur(10px);
   border-color: var(--line);
 }
 .step__glyph,
 .nav__glyph {
-  color: #f0cf8c;
-  text-shadow: 0 0 16px rgba(240, 207, 140, 0.55);
+  color: var(--gold-text);
+  text-shadow: none;
 }
 
 /* ── cards ── */
 .realm-card {
-  color: #fff;
+  color: var(--scene-fg);
   border-color: rgba(160, 200, 255, 0.25);
 }
 .realm-card:hover {
@@ -315,15 +315,15 @@ h2 {
 }
 .realm-card__body,
 .realm-card[data-mood='dark'] .realm-card__body {
-  background: linear-gradient(to top, rgba(6, 9, 30, 0.94) 22%, rgba(6, 9, 30, 0));
+  background: linear-gradient(to top, var(--card-fade) 22%, var(--card-fade-0));
 }
 .entry-card {
-  background: rgba(18, 26, 70, 0.5);
+  background: var(--glass);
   backdrop-filter: blur(10px);
   border-color: var(--line);
 }
 .entry-card:hover {
-  background: rgba(26, 36, 92, 0.7);
+  background: var(--glass-hover);
   border-color: rgba(142, 233, 255, 0.6);
   box-shadow: 0 0 40px -10px rgba(142, 233, 255, 0.45);
 }
@@ -336,7 +336,7 @@ h2 {
 }
 .entry-card__title,
 .entry__title {
-  color: #f0cf8c;
+  color: var(--gold-text);
 }
 
 /* ── map: a night star chart ── */
@@ -346,7 +346,7 @@ h2 {
     radial-gradient(circle at 82% 72%, rgba(80, 220, 255, 0.24), transparent 46%),
     radial-gradient(circle at 60% 20%, rgba(255, 160, 200, 0.14), transparent 40%),
     linear-gradient(160deg, #0b1130, #151b52);
-  border-color: rgba(160, 200, 255, 0.35);
+  border-color: var(--line-strong);
   box-shadow: 0 0 60px -20px rgba(120, 110, 255, 0.55), var(--shadow);
 }
 .map::before {
@@ -369,7 +369,7 @@ h2 {
   filter: drop-shadow(0 0 4px #8ee9ff);
 }
 .map__pin {
-  color: #fff;
+  color: var(--fg);
 }
 .map__peak {
   filter: drop-shadow(0 0 14px rgba(142, 233, 255, 0.55));
@@ -378,8 +378,8 @@ h2 {
   background: rgba(190, 200, 255, 0.85);
 }
 .map__label {
-  background: rgba(8, 12, 40, 0.72);
-  border-color: rgba(160, 200, 255, 0.35);
+  background: var(--glass-deep);
+  border-color: var(--line-strong);
   box-shadow: 0 0 24px -8px rgba(142, 233, 255, 0.5);
 }
 .map__label small {
@@ -389,8 +389,8 @@ h2 {
 /* ── realm + entry pages ── */
 .realm__title,
 .realm[data-mood='dark'] .realm__title {
-  color: #fff;
-  text-shadow: 0 2px 40px rgba(20, 20, 80, 0.7), 0 0 60px rgba(160, 190, 255, 0.35);
+  color: var(--scene-fg);
+  text-shadow: 0 2px 40px var(--title-shadow), 0 0 60px rgba(160, 190, 255, 0.35);
 }
 .realm__scene::after {
   content: '';
@@ -409,8 +409,8 @@ h2 {
 }
 .entry__realm,
 .entry[data-mood='dark'] .entry__realm {
-  background: rgba(8, 12, 40, 0.7);
-  color: #e6f3ff;
+  background: var(--glass-deep);
+  color: var(--fg);
   border: 1px solid var(--line-strong);
   backdrop-filter: blur(8px);
 }
@@ -449,7 +449,7 @@ h2 {
   filter: drop-shadow(0 0 10px #ffd27a);
 }
 .trial__center {
-  fill: #f0cf8c;
+  fill: var(--gold-text);
 }
 
 /* ── forge ── */
@@ -466,7 +466,7 @@ h2 {
   background:
     radial-gradient(ellipse at 50% 92%, color-mix(in srgb, var(--aff) 32%, transparent), transparent 62%),
     linear-gradient(180deg, #0d1336, #070a1c);
-  border-color: rgba(160, 200, 255, 0.35);
+  border-color: var(--line-strong);
   box-shadow: 0 0 60px -22px var(--aff), var(--shadow);
 }
 .anvil__glow {
@@ -486,24 +486,24 @@ h2 {
   box-shadow: 0 0 10px var(--aff), 0 0 4px #fff;
 }
 .choice {
-  background: rgba(18, 26, 70, 0.45);
+  background: var(--glass);
   backdrop-filter: blur(8px);
 }
 .choice.is-on {
   border-color: #8ee9ff;
-  background: rgba(30, 44, 110, 0.65);
+  background: var(--glass-on);
   box-shadow: 0 0 0 3px rgba(142, 233, 255, 0.22), 0 0 34px -4px rgba(142, 233, 255, 0.6);
 }
 .field__count {
-  color: #f0cf8c;
+  color: var(--gold-text);
 }
 .weapon-card {
-  background: rgba(14, 20, 60, 0.7);
+  background: var(--glass-strong);
   backdrop-filter: blur(10px);
-  border-color: rgba(160, 200, 255, 0.35);
+  border-color: var(--line-strong);
 }
 .weapon-card[data-rarity='heaven'] {
-  box-shadow: 0 0 0 1px #f0cf8c, 0 0 50px -6px rgba(240, 207, 140, 0.8);
+  box-shadow: 0 0 0 1px var(--gold-text), 0 0 50px -6px rgba(240, 207, 140, 0.8);
 }
 .weapon-card[data-rarity='earth'] {
   box-shadow: 0 0 0 1px rgba(127, 224, 200, 0.7), 0 0 40px -10px rgba(127, 224, 200, 0.7);
@@ -512,7 +512,7 @@ h2 {
   width: 100%;
 }
 .weapon-card__title {
-  color: #f0cf8c;
+  color: var(--gold-text);
 }
 .reveal .weapon-card {
   background: rgba(8, 12, 40, 0.55);
@@ -520,7 +520,7 @@ h2 {
 
 /* ── veil ── */
 .veil {
-  background: radial-gradient(circle at 50% 50%, rgba(30, 24, 90, 0.97), rgba(5, 7, 22, 0.99));
+  background: var(--veil);
 }
 .veil__paper {
   box-shadow: 0 0 80px rgba(255, 200, 120, 0.55), 0 10px 40px rgba(0, 0, 0, 0.5);
