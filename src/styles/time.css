@@ -62,7 +62,7 @@
   --h-shadow: none;
   --map-bg: radial-gradient(circle at 20% 30%, #ffffff, transparent 45%), radial-gradient(circle at 80% 72%, #bfe6ea, transparent 50%), linear-gradient(160deg, #e6f2f0, #cfe6e8);
   --map-stars: 0;
-  color-scheme: light;
+  color-scheme: only light; /* opt out of browsers that force dark mode onto light pages */
 }
 
 [data-time='afternoon'] {
@@ -101,7 +101,7 @@
   --h-shadow: none;
   --map-bg: radial-gradient(circle at 20% 30%, #ffffff, transparent 45%), radial-gradient(circle at 80% 72%, #ffe9b0, transparent 50%), linear-gradient(160deg, #f8efd8, #e6eef2);
   --map-stars: 0;
-  color-scheme: light;
+  color-scheme: only light; /* opt out of browsers that force dark mode onto light pages */
 }
 
 [data-time='evening'] {
