@@ -267,7 +267,8 @@ h2 {
   align-items: flex-start;
 }
 .hero__hint {
-  color: #bcc8f5;
+  color: #fff;
+  text-shadow: 0 1px 14px rgba(10, 8, 50, 0.9), 0 0 4px rgba(10, 8, 50, 0.8);
 }
 .hero__scroll {
   border-color: rgba(190, 220, 255, 0.5);
