@@ -1,4 +1,4 @@
-import { useId, useMemo, type CSSProperties } from 'react';
+import { useId, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { mulberry32 } from '../../lib/landscape';
 
 /**
@@ -6,6 +6,17 @@ import { mulberry32 } from '../../lib/landscape';
  * so they float over a shared sky that changes with the time of day. Colours that should follow
  * the hour come from CSS variables set on the stage (--cloud, --glow, --glow2, --ink).
  */
+
+
+/** Keeps a scene's subject clear of the text card: shifted aside on wide screens (baked into each scene)
+ *  and re-centred, raised and scaled on phones, where the card is a sheet over the lower half. */
+function Focus({ back = 0, up = 0, zoom = 1, ox = 800, oy = 450, children }: { back?: number; up?: number; zoom?: number; ox?: number; oy?: number; children: ReactNode }) {
+  return (
+    <g className="focus" style={{ ['--bx' as string]: `${back}px`, ['--by' as string]: `${up}px`, ['--z' as string]: zoom, ['--ox' as string]: `${ox}px`, ['--oy' as string]: `${oy}px` } as CSSProperties}>
+      {children}
+    </g>
+  );
+}
 
 const d = (depth: number): CSSProperties => ({ ['--d' as string]: depth });
 const VIEW = '0 0 1600 900';
@@ -51,6 +62,7 @@ export function WhaleScene() {
         </linearGradient>
       </defs>
       <CloudBank id={id} y={690} depth={0.4} />
+      <Focus back={370} zoom={0.55} ox={460} oy={330}>
       <g className="sc-layer sc-whale" style={d(1.2)}>
         <g transform="translate(90 170) scale(1.12)">
           <path
@@ -68,6 +80,7 @@ export function WhaleScene() {
           <ellipse cx="300" cy="150" rx="260" ry="70" className="c-cloud" opacity="0.35" filter={`url(#${id}-b20)`} />
         </g>
       </g>
+      </Focus>
       <CloudBank id={id} y={790} depth={0.9} opacity={0.95} />
     </svg>
   );
@@ -100,6 +113,7 @@ export function IsleScene() {
         </linearGradient>
       </defs>
       <CloudBank id={id} y={760} depth={0.5} />
+      <Focus back={-210} up={-170} zoom={0.7} ox={1010} oy={560}>
       <g className="sc-layer sc-bob" style={d(1)}>
         <g transform="translate(1010 560)">
           {/* hanging roots */}
@@ -132,6 +146,7 @@ export function IsleScene() {
           </g>
         </g>
       </g>
+      </Focus>
       <CloudBank id={id} y={830} depth={1.1} opacity={0.95} />
     </svg>
   );
@@ -171,7 +186,8 @@ export function CrescentScene() {
           <circle cx="905" cy="380" r="262" fill="#000" />
         </mask>
       </defs>
- <g transform="translate(-260 0)">
+ <Focus back={260} zoom={0.8} ox={540} oy={410}>
+      <g transform="translate(-260 0)">
       <g className="sc-layer" style={d(0.3)}>
         <circle cx="800" cy="410" r="470" fill={`url(#${id}-halo)`} />
       </g>
@@ -192,6 +208,7 @@ export function CrescentScene() {
         ))}
       </g>
       </g>
+      </Focus>
       <g className="sc-layer" style={d(1.2)}>
         {Array.from({ length: 22 }, (_, i) => (
           <circle key={i} cx={(i * 211) % 1600} cy={120 + ((i * 137) % 560)} r={1.4 + (i % 3)} className="c-glow" opacity="0.8" />
@@ -244,6 +261,7 @@ export function ArchScene() {
       <g className="sc-layer" style={d(0.5)}>
         <ellipse cx="800" cy="860" rx="780" ry="90" fill="#7aa56a" opacity="0.85" />
       </g>
+      <Focus back={-250} up={-80} zoom={0.78} ox={1050} oy={470}>
       <g transform="translate(250 0)">
       <g className="sc-layer" style={d(0.9)}>
         <path d="M505 790 L505 360 A295 295 0 0 1 1095 360 L1095 790" fill="none" stroke={`url(#${id}-wood)`} strokeWidth="38" strokeLinecap="round" />
@@ -268,6 +286,7 @@ export function ArchScene() {
         <circle cx="800" cy="462" r="13" className="c-glow" />
       </g>
       </g>
+      </Focus>
     </svg>
   );
 }
@@ -292,6 +311,7 @@ export function CourtScene() {
         </linearGradient>
       </defs>
       <CloudBank id={id} y={730} depth={0.5} />
+      <Focus back={240} up={-150} zoom={0.6} ox={560} oy={520}>
       <g className="sc-layer sc-bob" style={d(1)}>
         <g transform="translate(560 520)">
           <path d="M-420 0 L420 0 C 380 70 300 120 200 160 C 120 200 50 240 0 300 C -50 240 -120 200 -200 160 C -300 120 -380 70 -420 0 Z" fill={`url(#${id}-stone)`} />
@@ -333,6 +353,7 @@ export function CourtScene() {
           ))}
         </g>
       </g>
+      </Focus>
       <CloudBank id={id} y={820} depth={1.1} opacity={0.95} />
     </svg>
   );
@@ -357,6 +378,7 @@ export function GateScene() {
         </linearGradient>
       </defs>
       <CloudBank id={id} y={730} depth={0.4} />
+      <Focus back={-180} up={-250} zoom={0.75} ox={980} oy={520}>
       <g className="sc-layer" style={d(0.8)}>
         <g transform="translate(980 0)">
           {/* steps */}
@@ -384,6 +406,7 @@ export function GateScene() {
           <rect x="-190" y="386" width="380" height="380" fill="#fff6d8" opacity="0.14" />
         </g>
       </g>
+      </Focus>
       <CloudBank id={id} y={830} depth={1.1} opacity={0.95} />
     </svg>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowDown } from 'lucide-react';
 import { Landscape } from '../../components/motion/Landscape';
 import { Mist } from '../../components/motion/Mist';
 import { Petals } from '../../components/motion/Petals';
@@ -21,13 +22,15 @@ const smooth = (a: number, b: number, x: number) => {
 
 /** Where the flying sword is at progress p, in stage pixels, and which way it points. */
 function swordAt(p: number, w: number, h: number, swordH: number) {
+  const portrait = w < h;
   const pos = (q: number) => {
     // the sword swings to the side opposite each chapter's text card, and settles at the centre
     const swing = 0.3 * Math.cos(q * Math.PI * 6) * (1 - smooth(0.78, 1, q));
     // the gate stands a little right of centre, so the sword lands in front of it
-    const x = w * (0.5 + swing + 0.11 * smooth(0.78, 1, q));
-    const yPath = h * (0.8 - 0.34 * q - 0.05 * Math.sin(q * Math.PI * 6));
-    const planted = h * 0.8 - 0.47 * swordH;
+    const x = w * (0.5 + (portrait ? 0.7 : 1) * swing + (portrait ? 0 : 0.11) * smooth(0.78, 1, q));
+    // on a phone the text sits in a sheet over the lower half, so the sword flies above it
+    const yPath = h * ((portrait ? 0.5 : 0.8) - (portrait ? 0.2 : 0.34) * q - 0.05 * Math.sin(q * Math.PI * 6));
+    const planted = h * (portrait ? 0.5 : 0.8) - 0.47 * swordH;
     return { x, y: yPath + (planted - yPath) * smooth(0.86, 1, q) };
   };
   const a = pos(p);
@@ -61,6 +64,7 @@ export function Ascent() {
   const blossomRef = useRef<HTMLDivElement>(null);
   const starsRef = useRef<SVGSVGElement>(null);
   const hintRef = useRef<HTMLParagraphElement>(null);
+  const skipRef = useRef<HTMLAnchorElement>(null);
 
   const stars = useMemo(() => {
     const r = mulberry32(909);
@@ -93,13 +97,17 @@ export function Ascent() {
         const a = Math.abs(local);
         const scene = sceneRefs.current[i];
         if (scene) {
-          scene.style.opacity = String(clamp(1.55 - a * 1.7));
+          const so = clamp(1.55 - a * 1.7);
+          scene.style.opacity = String(so);
+          scene.style.visibility = so > 0.01 ? 'visible' : 'hidden';
           scene.style.setProperty('--l', clamp(local, -1.3, 1.3).toFixed(3));
         }
         const card = cardRefs.current[i];
         if (card) {
           const vis = clamp(1.7 - a * 2.8);
           card.style.opacity = String(vis);
+          // hidden cards must not keep focusable buttons in the tab order
+          card.style.visibility = vis > 0.02 ? 'visible' : 'hidden';
           card.style.transform = `translate3d(0, ${(local * 36).toFixed(1)}px, 0)`;
           card.style.pointerEvents = vis > 0.6 ? 'auto' : 'none';
         }
@@ -112,6 +120,11 @@ export function Ascent() {
       if (blossomRef.current) blossomRef.current.style.opacity = String(arch);
       if (starsRef.current) starsRef.current.style.opacity = String(0.35 + p * 0.65);
       if (hintRef.current) hintRef.current.style.opacity = String(1 - smooth(0.01, 0.06, p));
+      if (skipRef.current) {
+        const v = smooth(0.03, 0.08, p);
+        skipRef.current.style.opacity = String(v);
+        skipRef.current.style.visibility = v > 0.02 ? 'visible' : 'hidden';
+      }
 
       const s = swordAt(p, w, h, swordH);
       if (swordRef.current) {
@@ -119,10 +132,11 @@ export function Ascent() {
         swordRef.current.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) translate(-50%, -50%) rotate(${s.angle.toFixed(2)}deg)`;
       }
       if (trailRef.current) {
-        const steps = Math.max(2, Math.round(p * 120));
+        const from = Math.max(0, p - 0.17);
+        const steps = 60;
         let d = '';
         for (let k = 0; k <= steps; k++) {
-          const q = (k / steps) * p;
+          const q = from + (k / steps) * (p - from);
           const pt = swordAt(q, w, h, swordH);
           // the trail is drawn from the sword's hilt side, so offset it slightly behind the blade
           d += `${k ? 'L' : 'M'}${pt.x.toFixed(1)} ${(pt.y + swordH * 0.18).toFixed(1)}`;
@@ -139,10 +153,21 @@ export function Ascent() {
       apply(cur);
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    // only spend frames on the journey while it is on screen
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { rootMargin: '120px 0px' });
+    io.observe(outer);
+    start();
     window.addEventListener('resize', measure);
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      io.disconnect();
       window.removeEventListener('resize', measure);
     };
   }, [reduced]);
@@ -234,6 +259,7 @@ export function Ascent() {
                     </SealLink>
                   </div>
                   <p className="hero__hint" ref={hintRef}>
+                    <ArrowDown size={16} className="hero__cue" aria-hidden="true" />
                     {fine ? 'Scroll to fly. Your cursor is a sword.' : 'Scroll to fly. Drag a finger to trail light.'}
                   </p>
                 </>
@@ -260,12 +286,15 @@ export function Ascent() {
           ))}
         </div>
 
+        <div className="ascent__bar" aria-hidden="true">
+          <i />
+        </div>
         <nav className="ascent__rail" aria-label="Journey chapters">
           {CHAPTERS.map((c, i) => (
             <button key={c.id} ref={(el) => (dotRefs.current[i] = el)} onClick={() => goTo(i)} aria-label={`Go to: ${c.title}`} title={c.title} />
           ))}
         </nav>
-        <Link to="/realms" className="ascent__skip">
+        <Link to="/realms" className="ascent__skip" ref={skipRef}>
           Skip to the trials
         </Link>
       </div>

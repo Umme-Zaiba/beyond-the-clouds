@@ -217,3 +217,17 @@ body,
     padding: 0 10px;
   }
 }
+
+/* mid-width screens: keep the brand on one line and let the links breathe */
+.nav__name {
+  white-space: nowrap;
+}
+@media (max-width: 1040px) {
+  .nav__glyph,
+  .nav__sky-label {
+    display: none;
+  }
+  .nav__links {
+    gap: 12px;
+  }
+}

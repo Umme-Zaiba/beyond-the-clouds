@@ -296,3 +296,74 @@
     right: 12px;
   }
 }
+
+/* on phones the scene's subject is re-centred and lifted above the text sheet */
+@media (max-aspect-ratio: 1/1) {
+  .focus {
+    translate: var(--bx, 0px) var(--by, 0px);
+    scale: var(--z, 1);
+    transform-origin: var(--ox, 800px) var(--oy, 450px);
+  }
+}
+.hero__cue {
+  display: inline-block;
+  vertical-align: -3px;
+  margin-right: 6px;
+  animation: cue 1.8s ease-in-out infinite;
+}
+@keyframes cue {
+  50% {
+    transform: translateY(5px);
+  }
+}
+.card--ascent .eyebrow,
+.card--ascent .hero__title,
+.card--ascent .card__lede,
+.card--ascent .hero__buttons,
+.card--ascent .hero__hint {
+  animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.card--ascent .hero__title {
+  animation-delay: 0.12s;
+}
+.card--ascent .card__lede {
+  animation-delay: 0.3s;
+}
+.card--ascent .hero__buttons {
+  animation-delay: 0.45s;
+}
+.card--ascent .hero__hint {
+  animation-delay: 0.6s;
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+.ascent__bar {
+  display: none;
+}
+@media (max-width: 760px) {
+  .ascent__rail {
+    display: none;
+  }
+  .ascent__bar {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    z-index: 6;
+    background: var(--line);
+  }
+  .ascent__bar i {
+    display: block;
+    height: 100%;
+    width: calc(var(--p, 0) * 100%);
+    background: linear-gradient(90deg, var(--glow2), var(--glow));
+    box-shadow: 0 0 10px var(--glow2);
+  }
+}
